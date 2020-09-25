@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: PyABI
+Version: 0.0.42
+Summary: Core Implimation of the C++ PyABI Specification PEP-TBA
+Home-page: https://github.com/PyABI/PyABI
+Author: Scott McCallum (https github.com scott91e1)
+Author-email: 262464@195387.com
+License: UNKNOWN
+Description: # PyABI
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
