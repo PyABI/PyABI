@@ -1,3 +1,21 @@
+*.suo
+*.exp
+*.iobj
+*.ipdb
+*.lib
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.ipch
+*.exe.recipe
+*.obj
+*.tlog
+*.vcxproj.FileListAbsolute.txt
+*.pdb
+*.vcxproj.user
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
