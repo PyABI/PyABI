@@ -60,7 +60,7 @@ auto PyABI_threads = 4;
 
 #include "PyABI_singleton.hpp"
 
-auto singleton = Singleton();
+//static Singleton::Instance = Singleton();
 
 #include "PyABI_body.hpp"
 
@@ -86,6 +86,7 @@ static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs)
   PyList_SetItem(defaultargs, 2, must_log);
   auto dispatch_success = false;
   try {
+    hello_world__(args, kwargs, defaultargs);
     //auto callback = std::bind(&Singleton::hello, singleton, std::placeholders::_1);
     //singleton.PyABI_dispatch(module, args, kwargs, defaultargs, "hello_world", callback);
     dispatch_success = true;
