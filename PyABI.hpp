@@ -13,9 +13,7 @@ public:
 	};
 
 	void hello_world(size_t CallID, List Args, Dictionay kwArgs, List DefaultArgs) {
-
 		ResultBundle Result(CallID);
-
 		Mutex.lock();
 		try {
 			Results.push(Result);

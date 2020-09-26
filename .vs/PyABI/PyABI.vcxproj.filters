@@ -30,13 +30,7 @@
     <ClCompile Include="..\..\PyABI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\sqlite3.c">
-      <Filter>Source Files\sqlite</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\PyABI_body.hpp">
-      <Filter>Source Files\PyABI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\PyABI_body_retroforth.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClCompile>
     <ClCompile Include="..\..\PyABI_footer.hpp">
@@ -44,6 +38,9 @@
     </ClCompile>
     <ClCompile Include="..\..\PyABI_singleton.hpp">
       <Filter>Source Files\PyABI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\depends\sqlite3.c">
+      <Filter>Source Files\sqlite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

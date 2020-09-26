@@ -13,8 +13,10 @@
 #include <functional>
 #include <condition_variable>
 
-#include "ttmath.h"
-#include "safeint.hpp"
+#include "depends\ttmath.h"
+#include "PyABI_safeint.hpp"
+
+//#include "PyABI_header_tinyjs.hpp"
 
 typedef long double Decimal80BIT;
 typedef std::u32string String_UTF32;
@@ -111,25 +113,32 @@ struct Arguments {
 
 };
 
-class XResults {
+class ResultBundle {
 
 public:
 
-  XResults(size_t CallID) : ID(CallID) {
+  ResultBundle(size_t call_id) : CallID(call_id), Success(false), ReturnTypeSet(false) {
 
   };
 
-  size_t ID;
+  size_t CallID;
+
+  bool Success;
 
   List results;
 
   Dictionay kwresults;
 
-  std::stack<String_UTF32> returna_String;
-  std::stack<Integer64BIT> returna_Integer64;
-  std::stack<Decimal80BIT> returna_Decimal80;
-  std::stack<Integer_Huge> returna_HugeInteger;
-  std::stack<Decimal_Huge> returna_HugeDecimal;
+  void Return(String_UTF32& value) {
+    ReturnTypeSet = true;
+    returna_String.push(value);
+  }
+
+  void Return(Integer64BIT& value) {
+    ReturnTypeSet = true;
+    returna_Integer64.push(value);
+  }
+
 
   PyObject* result() {
     PyObject* ret = 0;
@@ -155,6 +164,16 @@ public:
     }
     return ret;
   };
+
+private:
+
+  bool ReturnTypeSet;
+
+  std::stack<String_UTF32> returna_String;
+  std::stack<Integer64BIT> returna_Integer64;
+  std::stack<Decimal80BIT> returna_Decimal80;
+  std::stack<Integer_Huge> returna_HugeInteger;
+  std::stack<Decimal_Huge> returna_HugeDecimal;
 
 };
 

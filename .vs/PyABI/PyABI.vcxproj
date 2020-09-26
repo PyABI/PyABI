@@ -169,12 +169,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\depends\sqlite3.c" />
     <ClCompile Include="..\..\PyABI.cpp" />
     <ClCompile Include="..\..\PyABI_body.hpp" />
-    <ClCompile Include="..\..\PyABI_body_retroforth.hpp" />
     <ClCompile Include="..\..\PyABI_footer.hpp" />
     <ClCompile Include="..\..\PyABI_singleton.hpp" />
-    <ClCompile Include="..\..\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\PyABI.hpp" />
