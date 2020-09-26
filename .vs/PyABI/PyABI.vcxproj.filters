@@ -22,6 +22,9 @@
     <Filter Include="Source Files\PyABI\Header Files">
       <UniqueIdentifier>{b7ce25cb-6ebf-495c-b872-0c70053a604b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\ttmath">
+      <UniqueIdentifier>{1cccc7af-4222-4218-85fa-fdc0ed6e9360}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\PyABI.cpp">
@@ -30,19 +33,16 @@
     <ClCompile Include="..\..\sqlite3.c">
       <Filter>Source Files\sqlite</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\PyABI_footer.cpp">
+    <ClCompile Include="..\..\PyABI_body.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\PyABI_header.cpp">
+    <ClCompile Include="..\..\PyABI_body_retroforth.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\PyABI_body.cpp">
+    <ClCompile Include="..\..\PyABI_footer.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\PyABI_body_retroforth.cpp">
-      <Filter>Source Files\PyABI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\PyABI_singleton.cpp">
+    <ClCompile Include="..\..\PyABI_singleton.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,14 +77,41 @@
     <ClInclude Include="..\..\PyABI_header_retroforth_bios.hpp">
       <Filter>Source Files\PyABI\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\PyABI_singleton_private.hpp">
+    <ClInclude Include="..\..\PyABI_header_safeint.hpp">
       <Filter>Source Files\PyABI\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\PyABI_singleton_protected.hpp">
-      <Filter>Source Files\PyABI\Header Files</Filter>
+    <ClInclude Include="..\..\ttmath.h">
+      <Filter>Source Files\ttmath</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\PyABI_singleton_public.hpp">
-      <Filter>Source Files\PyABI\Header Files</Filter>
+    <ClInclude Include="..\..\ttmathbig.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathdec.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathint.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathmisc.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathobjects.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathparser.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmaththreads.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathtypes.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathuint.h">
+      <Filter>Source Files\ttmath</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ttmathuint_noasm.h">
+      <Filter>Source Files\ttmath</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

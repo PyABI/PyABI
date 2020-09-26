@@ -5,6 +5,7 @@ Python PyABI C++ Sepcification
 ***/
 
 /***
+
 //
 //  MIT License
 //
@@ -28,6 +29,7 @@ Python PyABI C++ Sepcification
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 //
+
 ***/
 
 /***
@@ -36,55 +38,119 @@ instruct the compiler to actually complile the source
 
 ***/
 
-#define PyABI_INCLUDE
+#define PyABI_INCLUDE 1
 
 #include <string>
 #include <sstream>
 #include <iostream>
 
+/*
+
+by default we are going to have a small number of workers
+
+its also possible to match the number of cores on the host with:
+
+auto PyABI_threads = std::thread::hardware_concurrency();
+
+*/
+
+auto PyABI_threads = 4;
+
 #include "PyABI.hpp"
 
-#include "PyABI_body.cpp"
+#include "PyABI_singleton.hpp"
+
+auto singleton = Singleton();
+
+#include "PyABI_body.hpp"
 
 // Module method definitions
-static PyObject* hello_world(PyObject* self, PyObject* args) {
-  printf("Hello, world!\n");
-  Py_RETURN_NONE;
+static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs) {
+
+  PY_DEFAULT_ARGUMENT_INIT(encoding, PyUnicode_FromString("utf-8"), NULL);
+  PY_DEFAULT_ARGUMENT_INIT(the_id, PyLong_FromLong(0L), NULL);
+  PY_DEFAULT_ARGUMENT_INIT(must_log, PyBool_FromLong(1L), NULL);
+
+  static const char* kwlist[] = { "encoding", "the_id", "must_log", NULL };
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|Oip", const_cast<char**>(kwlist), &encoding, &the_id, &must_log)) {
+    return NULL;
+  }
+
+  PY_DEFAULT_ARGUMENT_SET(encoding);
+  PY_DEFAULT_ARGUMENT_SET(the_id);
+  PY_DEFAULT_ARGUMENT_SET(must_log);
+
+  PyObject* defaultargs = PyList_New(3);
+  PyList_SetItem(defaultargs, 0, encoding);
+  PyList_SetItem(defaultargs, 1, the_id);
+  PyList_SetItem(defaultargs, 2, must_log);
+  auto dispatch_success = false;
+  try {
+    //auto callback = std::bind(&Singleton::hello, singleton, std::placeholders::_1);
+    //singleton.PyABI_dispatch(module, args, kwargs, defaultargs, "hello_world", callback);
+    dispatch_success = true;
+  }
+  catch (...) {
+
+  };
+  Py_DECREF(defaultargs);
+
+  Py_DECREF(encoding);
+  Py_DECREF(the_id);
+  Py_DECREF(must_log);
+
+  Py_INCREF(Py_None);
+  return Py_None;
 }
 
-static PyObject* hello(PyObject* self, PyObject* args) {
+
+static PyObject* hello(PyObject* module, PyObject* args, PyObject* kwargs) {
   const char* name;
   if (!PyArg_ParseTuple(args, "s", &name)) {
     return NULL;
   }
 
+  PyObject* defaultargs = PyList_New(0);
+  auto dispatch_success = false;
+  try {
+    //auto callback = std::bind(&Singleton::hello, singleton, std::placeholders::_1);
+    //singleton.PyABI_dispatch(module, args, kwargs, defaultargs, "hello", callback);
+    dispatch_success = true;
+  }
+  catch (...) {
+
+  };
+  Py_DECREF(defaultargs);
+
   printf("Hello, %s!\n", name);
-  Py_RETURN_NONE;
+
+  Py_INCREF(Py_None);
+  return Py_None;
 }
 
-static PyMethodDef cpu_methods[] = {
+static PyMethodDef abi_methods[] = {
     {
-        "hello_world", hello_world, METH_NOARGS,
+        "hello_world", (PyCFunction)hello_world, METH_VARARGS | METH_KEYWORDS,
         "Print 'hello world' from a method defined in a C extension."
     },
     {
-        "hello", hello, METH_VARARGS,
+        "hello", (PyCFunction)hello, METH_VARARGS | METH_KEYWORDS,
         "Print 'hello xxx' from a method defined in a C extension."
     },
     {NULL, NULL, 0, NULL}
 };
 
-static struct PyModuleDef hello_definition = {
+static struct PyModuleDef abi_definition = {
     PyModuleDef_HEAD_INIT,
     "PyABI_pyd",
     "PyABI C++",
     -1,
-    cpu_methods
+    abi_methods
 };
 
 PyMODINIT_FUNC PyInit_PyABI_pyd(void) {
   Py_Initialize();
-  return PyModule_Create(&hello_definition);
+  return PyModule_Create(&abi_definition);
 }
 
 // Create some work to test the Thread Pool
@@ -169,4 +235,4 @@ int main(int argc, char** argv) {
 
 }
 
-#include "PyABI_footer.cpp"
+#include "PyABI_footer.hpp"

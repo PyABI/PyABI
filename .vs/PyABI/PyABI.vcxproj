@@ -170,11 +170,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\PyABI.cpp" />
-    <ClCompile Include="..\..\PyABI_body.cpp" />
-    <ClCompile Include="..\..\PyABI_body_retroforth.cpp" />
-    <ClCompile Include="..\..\PyABI_footer.cpp" />
-    <ClCompile Include="..\..\PyABI_header.cpp" />
-    <ClCompile Include="..\..\PyABI_singleton.cpp" />
+    <ClCompile Include="..\..\PyABI_body.hpp" />
+    <ClCompile Include="..\..\PyABI_body_retroforth.hpp" />
+    <ClCompile Include="..\..\PyABI_footer.hpp" />
+    <ClCompile Include="..\..\PyABI_singleton.hpp" />
     <ClCompile Include="..\..\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
@@ -186,11 +185,20 @@
     <ClInclude Include="..\..\PyABI_header_rang.hpp" />
     <ClInclude Include="..\..\PyABI_header_retroforth.hpp" />
     <ClInclude Include="..\..\PyABI_header_retroforth_bios.hpp" />
-    <ClInclude Include="..\..\PyABI_singleton_private.hpp" />
-    <ClInclude Include="..\..\PyABI_singleton_protected.hpp" />
-    <ClInclude Include="..\..\PyABI_singleton_public.hpp" />
+    <ClInclude Include="..\..\PyABI_header_safeint.hpp" />
     <ClInclude Include="..\..\sqlite3.h" />
     <ClInclude Include="..\..\sqlite3ext.h" />
+    <ClInclude Include="..\..\ttmath.h" />
+    <ClInclude Include="..\..\ttmathbig.h" />
+    <ClInclude Include="..\..\ttmathdec.h" />
+    <ClInclude Include="..\..\ttmathint.h" />
+    <ClInclude Include="..\..\ttmathmisc.h" />
+    <ClInclude Include="..\..\ttmathobjects.h" />
+    <ClInclude Include="..\..\ttmathparser.h" />
+    <ClInclude Include="..\..\ttmaththreads.h" />
+    <ClInclude Include="..\..\ttmathtypes.h" />
+    <ClInclude Include="..\..\ttmathuint.h" />
+    <ClInclude Include="..\..\ttmathuint_noasm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
