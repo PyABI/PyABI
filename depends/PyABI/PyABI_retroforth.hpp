@@ -1,7 +1,17 @@
-/***
+/*** Nga
 
+License: MIT License
+
+Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
+Author: Copyright (c) 2008-2019, Charles Childers (github.com crcx)
+Author: Copyright (c) 2009-2010, Luke Parrish
+Author: Copyright (c) 2010,      Marc Simpson
+Author: Copyright (c) 2010,      Jay Skeer
+Author: Copyright (c) 2011,      Kenneth Keating
 
 ***/
+
+#pragma once
 
 #include <iostream>
 #include <algorithm>
@@ -37,25 +47,14 @@ typedef void (*Handler)(void);
 
 ***/
 
-
-/***
-
-Nga ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Copyright (c) 2008 - 2019, Charles Childers
-Copyright (c) 2009 - 2010, Luke Parrish
-Copyright (c) 2010,        Marc Simpson
-Copyright (c) 2010,        Jay Skeer
-Copyright (c) 2011,        Kenneth Keating
-
-***/
-
 template <class CELL, int64_t IMAGE_SIZE, int64_t STACK_DEPTH, int64_t ADDRESSES>
 class RETRO_VM {
 
 public:
 
   RETRO_VM(CELL CELL_MIN, CELL CELL_MAX)
-    : ip(0), sp(0), rp(0), image_size(IMAGE_SIZE + 1), cell_min(CELL_MIN), cell_max(CELL_MAX)
+    : ip(0), sp(0), rp(0)
+    , image_size(IMAGE_SIZE + 1), cell_min(CELL_MIN), cell_max(CELL_MAX)
   {
 
     IO_deviceHandlers[0] = &generic_output;

@@ -1,36 +1,12 @@
 /***
 
-Python PyABI C++ Sepcification
+License: MIT License
+
+Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 ***/
 
-/***
-
-//
-//  MIT License
-//
-//  Copyright(c) 2020 - 2020, Scott McCallum (https github.com scott91e1)
-//
-//  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this softwareand associated documentation files(the "Software"), to deal
-//  in the Software without restriction, including without limitation the rights
-//  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
-//  copies of the Software, and to permit persons to whom the Software is
-//  furnished to do so, subject to the following conditions :
-//
-//  The above copyright noticeand this permission notice shall be included in all
-//  copies or substantial portions of the Software.
-//
-//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
-//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-//  SOFTWARE.
-//
-
-***/
+#pragma once
 
 /***
 
@@ -58,11 +34,11 @@ auto PyABI_threads = 4;
 
 #include "PyABI.hpp"
 
-#include "PyABI_singleton.hpp"
+#include "depends/PyABI/PyABI_singleton.hpp"
 
 //static Singleton::Instance = Singleton();
 
-#include "PyABI_body.hpp"
+#include "depends/PyABI/PyABI_body.hpp"
 
 // Module method definitions
 static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs) {
@@ -129,6 +105,9 @@ static PyObject* hello(PyObject* module, PyObject* args, PyObject* kwargs) {
   return Py_None;
 }
 
+static PyObject* PyABI_main(PyObject* module, PyObject* args, PyObject* kwargs);
+static PyObject* PyABI_stop(PyObject* module, PyObject* args, PyObject* kwargs);
+
 static PyMethodDef abi_methods[] = {
     {
         "hello_world", (PyCFunction)hello_world, METH_VARARGS | METH_KEYWORDS,
@@ -192,10 +171,76 @@ struct Member
 int vv() { puts("nothing"); return 0; }
 int vs(const std::string& str) { puts(str.c_str()); return 0; }
 
+static void
+urkel_usage(void) {
+  std::cout <<
+    "\n"
+    "  Usage: urkel [options] [action] [args]\n"
+    "\n"
+    "  Actions:\n"
+    "\n"
+    "    create                create a new database\n"
+    "    destroy               destroy database\n"
+    "    info                  print database information\n"
+    "    root                  print root hash\n"
+    "    get <key>             retrieve value\n"
+    "    insert <key> <value>  insert value\n"
+    "    remove <key>          remove value\n"
+    "    list                  list all keys\n"
+    "    prove <key>           create proof\n"
+    "    verify <key> <proof>  verify proof (requires --root)\n"
+    "\n"
+    "  Options:\n"
+    "\n"
+    "    -p, --path <path>     path to database (default: $URKEL_PATH)\n"
+    "    -r, --root <hash>     root hash to use for snapshots\n"
+    "    -H, --hash            hash key with BLAKE2b-256\n"
+    "    -h, --help            output usage information\n"
+    "\n"
+    "  Environment Variables:\n"
+    "\n"
+    "    URKEL_PATH            path to database (default: ./)\n"
+    "\n"
+    "  Example:\n"
+    "\n"
+    "    $ urkel create -p db\n"
+    "    $ cd db\n"
+    "    $ urkel insert foo 'deadbeef' -H\n"
+    "    $ urkel get foo -H\n"
+    "    $ urkel prove foo -H\n"
+    "    $ urkel verify foo $(urkel prove foo -H) -r $(urkel root) -H\n"
+    "    $ urkel destroy\n"
+    "\n";
+
+}
+
+#include "depends/argparse/argparse.hpp"
 
 int main(int argc, char** argv) {
 
   ThreadPool threadPool{ std::thread::hardware_concurrency() };
+
+  argparse::ArgumentParser program("test");
+
+  program.add_argument("--verbose")
+    .help("increase output verbosity")
+    .default_value(false)
+    .implicit_value(true);
+
+  try {
+    program.parse_args(argc, argv);
+  }
+  catch (const std::runtime_error& err) {
+    std::cout << err.what() << std::endl;
+    std::cout << program;
+    exit(0);
+  }
+
+  if (program["--verbose"] == true) {
+    std::cout << "Verbosity enabled" << std::endl;
+  }
+
+  /***
 
   threadPool.enqueue(spitId);
   threadPool.enqueue(&spitId);
@@ -232,8 +277,36 @@ int main(int argc, char** argv) {
   std::cout << f2.get() << '\n';
   std::cout << f3.get() << '\n';
 
+  ***/
+
   return EXIT_SUCCESS;
 
 }
 
-#include "PyABI_footer.hpp"
+#include "depends/PyABI/PyABI_footer.hpp"
+
+/***
+
+//
+//  MIT License
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this softwareand associated documentation files(the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions :
+//
+//  The above copyright notice and this permission notice shall be included in all
+//  copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+//  SOFTWARE.
+//
+
+***/

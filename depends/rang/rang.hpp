@@ -1,7 +1,12 @@
 /***
 
+License: MIT License
+
+Author: ?
 
 ***/
+
+#pragma once
 
 #ifndef RANG_DOT_HPP
 #define RANG_DOT_HPP

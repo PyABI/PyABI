@@ -1,7 +1,13 @@
 /***
 
+License: MIT License
+
+Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
+Author: Copyright (c) 2008-2019, Charles Childers (github.com crcx)
 
 ***/
+
+#pragma once
 
 #include <iostream>
 #include <algorithm>

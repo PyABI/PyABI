@@ -169,35 +169,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\depends\sqlite3.c" />
+    <ClCompile Include="..\..\depends\sqlite\sqlite3.c" />
     <ClCompile Include="..\..\PyABI.cpp" />
-    <ClCompile Include="..\..\PyABI_body.hpp" />
-    <ClCompile Include="..\..\PyABI_footer.hpp" />
-    <ClCompile Include="..\..\PyABI_singleton.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\depends\PyABI\PyABI_body.hpp" />
+    <ClInclude Include="..\..\depends\PyABI\PyABI_footer.hpp" />
+    <ClInclude Include="..\..\depends\PyABI\PyABI_header.hpp" />
+    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth.hpp" />
+    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth_bios.hpp" />
+    <ClInclude Include="..\..\depends\PyABI\PyABI_singleton.hpp" />
+    <ClInclude Include="..\..\depends\ttmath\ttmath.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathbig.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathdec.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathint.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathmisc.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathobjects.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathparser.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmaththreads.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathtypes.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathuint.h" />
+    <ClInclude Include="..\..\depends\ttmath\ttmathuint_noasm.h" />
     <ClInclude Include="..\..\PyABI.hpp" />
-    <ClInclude Include="..\..\PyABI_header.hpp" />
-    <ClInclude Include="..\..\PyABI_header_argparse.hpp" />
-    <ClInclude Include="..\..\PyABI_header_embed.hpp" />
-    <ClInclude Include="..\..\PyABI_header_embed_bios.hpp" />
-    <ClInclude Include="..\..\PyABI_header_rang.hpp" />
-    <ClInclude Include="..\..\PyABI_header_retroforth.hpp" />
-    <ClInclude Include="..\..\PyABI_header_retroforth_bios.hpp" />
-    <ClInclude Include="..\..\PyABI_header_safeint.hpp" />
     <ClInclude Include="..\..\sqlite3.h" />
     <ClInclude Include="..\..\sqlite3ext.h" />
-    <ClInclude Include="..\..\ttmath.h" />
-    <ClInclude Include="..\..\ttmathbig.h" />
-    <ClInclude Include="..\..\ttmathdec.h" />
-    <ClInclude Include="..\..\ttmathint.h" />
-    <ClInclude Include="..\..\ttmathmisc.h" />
-    <ClInclude Include="..\..\ttmathobjects.h" />
-    <ClInclude Include="..\..\ttmathparser.h" />
-    <ClInclude Include="..\..\ttmaththreads.h" />
-    <ClInclude Include="..\..\ttmathtypes.h" />
-    <ClInclude Include="..\..\ttmathuint.h" />
-    <ClInclude Include="..\..\ttmathuint_noasm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
