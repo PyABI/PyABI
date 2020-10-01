@@ -6,8 +6,6 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 ***/
 
-#pragma once
-
 /***
 
 instruct the compiler to actually complile the source
@@ -34,11 +32,11 @@ auto PyABI_threads = 4;
 
 #include "PyABI.hpp"
 
-#include "depends/PyABI/PyABI_singleton.hpp"
+#include "src/PyABI/PyABI_singleton.hpp"
 
 //static Singleton::Instance = Singleton();
 
-#include "depends/PyABI/PyABI_body.hpp"
+#include "src/PyABI/PyABI_body.hpp"
 
 // Module method definitions
 static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs) {
@@ -90,8 +88,7 @@ static PyObject* hello(PyObject* module, PyObject* args, PyObject* kwargs) {
   PyObject* defaultargs = PyList_New(0);
   auto dispatch_success = false;
   try {
-    //auto callback = std::bind(&Singleton::hello, singleton, std::placeholders::_1);
-    //singleton.PyABI_dispatch(module, args, kwargs, defaultargs, "hello", callback);
+    hello__(args, kwargs, defaultargs);
     dispatch_success = true;
   }
   catch (...) {
@@ -214,7 +211,7 @@ urkel_usage(void) {
 
 }
 
-#include "depends/argparse/argparse.hpp"
+#include "src/argparse/argparse.hpp"
 
 int main(int argc, char** argv) {
 
@@ -283,7 +280,7 @@ int main(int argc, char** argv) {
 
 }
 
-#include "depends/PyABI/PyABI_footer.hpp"
+#include "src/PyABI/PyABI_footer.hpp"
 
 /***
 

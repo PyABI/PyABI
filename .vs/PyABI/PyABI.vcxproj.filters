@@ -19,15 +19,12 @@
     <Filter Include="Source Files\PyABI">
       <UniqueIdentifier>{27762bed-5a81-4768-bec4-27a8d6ff3419}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ttmath">
-      <UniqueIdentifier>{1cccc7af-4222-4218-85fa-fdc0ed6e9360}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\PyABI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\depends\sqlite\sqlite3.c">
+    <ClCompile Include="..\..\src\sqlite\sqlite3.c">
       <Filter>Source Files\sqlite</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,55 +38,22 @@
     <ClInclude Include="..\..\PyABI.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_body.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_body.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_footer.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_footer.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_header.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_header.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_singleton.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmath.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathbig.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathdec.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathint.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathmisc.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathobjects.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathparser.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmaththreads.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathtypes.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathuint.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\ttmath\ttmathuint_noasm.h">
-      <Filter>Source Files\ttmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth_bios.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth_bios.hpp">
+    <ClInclude Include="..\..\src\PyABI\PyABI_singleton.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
   </ItemGroup>

@@ -8,7 +8,7 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 #pragma once
 
-#include "depends/PyABI/PyABI_header.hpp"
+#include "src/PyABI/PyABI_header.hpp"
 
 class Singleton final {
 
@@ -34,7 +34,7 @@ public:
     }
 
 
-    void hello_world(size_t CallID, List Args, Dictionay kwArgs, List DefaultArgs) {
+    void hello_world(const size_t CallID, const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
         ResultBundle Result(CallID);
         
         /***
@@ -45,15 +45,13 @@ public:
 
         AtomicResultsPush(Result);
     }
-    size_t hello_world__(PyObject* args, PyObject* kwargs, PyObject* defaultargs) {
-        List Args(args), DefaultArgs(defaultargs);
-        Dictionay kwArgs(kwargs);
-        size_t ID = NextID++;
+    size_t hello_world__(const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
+        const size_t ID = NextID++;
         Threads.enqueue(std::bind(&Singleton::hello_world, this, ID, Args, kwArgs, DefaultArgs));
         return ID;
     };
 
-    void hello(size_t CallID, List Args, Dictionay kwArgs, List DefaultArgs) {
+    void hello(const size_t CallID, const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
         ResultBundle Result(CallID);
 
         /***
@@ -64,10 +62,8 @@ public:
 
         AtomicResultsPush(Result);
     }
-    size_t hello__(PyObject* args, PyObject* kwargs, PyObject* defaultargs) {
-        List Args(args), DefaultArgs(defaultargs);
-        Dictionay kwArgs(kwargs);
-        size_t ID = NextID++;
+    size_t hello__(const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
+        const size_t ID = NextID++;
         Threads.enqueue(std::bind(&Singleton::hello, this, ID, Args, kwArgs, DefaultArgs));
         return ID;
     };

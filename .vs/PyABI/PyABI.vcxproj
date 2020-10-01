@@ -152,13 +152,14 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/permissive- %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -169,30 +170,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\depends\sqlite\sqlite3.c" />
     <ClCompile Include="..\..\PyABI.cpp" />
+    <ClCompile Include="..\..\src\sqlite\sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\depends\PyABI\PyABI_body.hpp" />
-    <ClInclude Include="..\..\depends\PyABI\PyABI_footer.hpp" />
-    <ClInclude Include="..\..\depends\PyABI\PyABI_header.hpp" />
-    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth.hpp" />
-    <ClInclude Include="..\..\depends\PyABI\PyABI_retroforth_bios.hpp" />
-    <ClInclude Include="..\..\depends\PyABI\PyABI_singleton.hpp" />
-    <ClInclude Include="..\..\depends\ttmath\ttmath.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathbig.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathdec.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathint.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathmisc.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathobjects.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathparser.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmaththreads.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathtypes.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathuint.h" />
-    <ClInclude Include="..\..\depends\ttmath\ttmathuint_noasm.h" />
     <ClInclude Include="..\..\PyABI.hpp" />
     <ClInclude Include="..\..\sqlite3.h" />
     <ClInclude Include="..\..\sqlite3ext.h" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_body.hpp" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_footer.hpp" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_header.hpp" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth.hpp" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth_bios.hpp" />
+    <ClInclude Include="..\..\src\PyABI\PyABI_singleton.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
