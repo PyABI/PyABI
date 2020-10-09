@@ -8,6 +8,7 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 #pragma once
 
+#define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
 #include <map>
@@ -15,6 +16,7 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 #include <array>
 #include <stack>
 #include <vector>
+//#include <unique>
 
 #include <future>
 #include <thread>
@@ -24,12 +26,11 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 #include <condition_variable>
 
 #include "../ttmath/ttmath.h"
+
 #include "../safeint/safeint.hpp"
 
-//#include "PyABI_header_tinyjs.hpp"
-
 typedef long double Decimal80BIT;
-typedef std::u32string String_UTF32;
+typedef std::u32string String;
 typedef ttmath::Int<256> Integer_Huge;
 typedef ttmath::Big<8, 8> Decimal_Huge;
 typedef SafeInt<long long int> Integer64BIT;
@@ -71,12 +72,11 @@ static size_t StringHash__Dynamic(const char* str) {
   return R;
 }
 
-
 struct Unicode {
 
-  String_UTF32 Value;
+  String Value;
 
-  Unicode(String_UTF32 value) : Value(value) {
+  Unicode(String value) : Value(value) {
 
   };
 
@@ -87,13 +87,13 @@ struct Unicode {
   PyObject* to_unicode() {
     PyObject* result = 0;
     Py_UCS4 maxchar = 0;
-    for (String_UTF32::iterator it = Value.begin(); it != Value.end(); ++it) {
+    for (String::iterator it = Value.begin(); it != Value.end(); ++it) {
       if (*it > maxchar) {
         maxchar = *it;
       }
     }
     result = PyUnicode_New(Value.length() + 1, maxchar);
-    for (String_UTF32::iterator it = Value.begin(); it != Value.end(); ++it) {
+    for (String::iterator it = Value.begin(); it != Value.end(); ++it) {
       //PyUnicode_WRITE()
     }
     return result;
@@ -101,71 +101,161 @@ struct Unicode {
 
 };
 
-struct Object {
+class List;
+class Tuple;
+class Dictionay;
 
-  // By default its a Python None object
-  Object() 
-  : Type(StringHash::StaticHash("NONE")) {
+class Object {
 
-  };
+  public:
 
-  Object(const char* utf8)
-    : Type(StringHash::StaticHash("String_UTF32")) {
+		bool isNone() { 
+      return m_Object->TypeHash == StringHash::StaticHash("None"); 
+    }
 
-  };
+  private:
 
-  Object(Decimal80BIT value)
-    : Type(StringHash::StaticHash("Decimal80BIT")) {
+    class Object_ABC {
 
-  };
+      public:
 
-  const Decimal80BIT& asDecimal80BIT() {
+        Object_ABC(const char *type, int32_t typeHash) 
+          : Type(type), TypeHash(typeHash) {
 
-  };
+        }
 
-  PyObject* toPyObject() {
-    switch (Type) {
-    case StringHash::StaticHash("NONE"):
-      break;
+				const char* Type;
 
-    case StringHash::StaticHash("String_UTF32"):
-      break;
+        const int32_t TypeHash;
 
-    case StringHash::StaticHash("Decimal80BIT"):
-      break;
+        virtual PyObject* toPyObject() = 0;
+
+		    virtual void toInteger(int32_t&) {
+
+		    };
+
+		    virtual void toInteger(int64_t&) {
+
+		    };
 
     };
+
+		std::unique_ptr<Object_ABC> m_Object;
+
+	  class Object_None : public Object_ABC {
+
+	    public:
+
+        Object_None() : Object_ABC("None", StringHash::StaticHash("None")) {
+
+        }
+
+		    PyObject* toPyObject() override {
+          Py_INCREF(Py_None);
+			    return Py_None;
+		    }
+
+	  };
+
+    class Object_Integer : public Object_ABC {
+
+      public:
+
+				Object_Integer(const int64_t& value = 0)
+					: Object_ABC("Integer", StringHash::StaticHash("Integer")), m_Value(value) {
+
+				}
+
+        PyObject* toPyObject() override {
+          return PyLong_FromLongLong(m_Value);
+        }
+  
+    private:
+
+      int64_t m_Value;
+
+    };
+
+
+		/***
+
+    sanity check:
+
+    this switch statement will fail to compile if any of the strings produce the same hash
+
+		***/
+
+    void __sanity_check__all_hashes_are_unique__() {
+      switch (int32_t value = 0) {
+			  case StringHash::StaticHash("None"):
+			  case StringHash::StaticHash("List"):
+			  case StringHash::StaticHash("Dict"):
+				case StringHash::StaticHash("Tuple"):
+				case StringHash::StaticHash("String"):
+			  case StringHash::StaticHash("Decimal"):
+				case StringHash::StaticHash("Integer"):
+				case StringHash::StaticHash("PyObject"):
+      }
+    }
+
+  public:
+
+	  // By default its a Python None object
+	  Object()
+		  : m_Object(new Object_None()) {
+
+	  };
+
+		Object(const List& value)
+			: m_Object(new Object_None()) {
+
+		};
+
+		Object(const Tuple& value)
+			: m_Object(new Object_None()) {
+
+		};
+
+		Object(const Dictionay& value)
+			: m_Object(new Object_None()) {
+
+		};
+
+	  Object(const int32_t &value)
+		  : m_Object(new Object_Integer(value)) {
+
+	  };
+
+    Object(const int64_t &value)
+		  : m_Object(new Object_Integer(value)) {
+
+	  };
+
+	  PyObject* toPyObject() {
+		  return m_Object->toPyObject();
+	  };
+
+
+  };
+
+
+struct Dict {
+
+  Dict() {
+
+  };
+
+  Dict(PyObject* object) {
+
+  };
+
+  PyObject* toPyDict() {
+
   };
 
 private:
 
-  size_t Type;
-
-
-};
-
-
-struct Dictionay {
-
-  Dictionay() {
-
-  };
-
-  Dictionay(PyObject* object) {
-
-  };
-
-  PyObject* to_dict() {
-
-  };
-
-private:
-
-  std::map<String_UTF32, String_UTF32> Strings;
-  std::map<String_UTF32, Integer64BIT> Integer64s;
-  std::map<String_UTF32, Decimal80BIT> Decimal80s;
-  std::map<String_UTF32, Integer_Huge> HugeIntegers;
-  std::map<String_UTF32, Decimal_Huge> HugeDecimals;
+  std::map<String, Object> Objects;
 
 };
 
@@ -179,25 +269,45 @@ struct List {
 
   };
 
-  PyObject* to_list() {
+  PyObject* toPyList() {
 
   };
 
 private:
 
-  std::map<size_t, String_UTF32> Strings;
-  std::map<size_t, Integer64BIT> Integer64s;
-  std::map<size_t, Decimal80BIT> Decimal80s;
-  std::map<size_t, Integer_Huge> HugeInteger;
-  std::map<size_t, Decimal_Huge> HugeDecimal;
+  std::map<size_t, Object> Objects;
 
 };
+
+
+struct Tuple {
+
+	Tuple() {
+
+	};
+
+	Tuple(PyObject* object) {
+
+	};
+
+	PyObject* toPyList() {
+
+	};
+
+private:
+
+	std::map<size_t, Object> Objects;
+
+};
+
 
 class ResultBundle {
 
 public:
 
-  ResultBundle(const size_t call_id) : CallID(call_id), Success(false), ReturnTypeSet(false) {
+  ResultBundle(const size_t call_id) 
+    : CallID(call_id), 
+    Success(false), ResultTypeSet(false) {
 
   };
 
@@ -205,56 +315,29 @@ public:
 
   bool Success;
 
+	Object Result;
 
-  List Results;
+	List Results;
 
-  Dictionay kwResults;
+  Dict kwResults;
 
-  void Return(String_UTF32& value) {
-    ReturnTypeSet = true;
-    returna_String.push(value);
+  void Return(String& value) {
+		ResultTypeSet = true;
+    Result = Object(value.c_str());
   }
 
   void Return(Integer64BIT& value) {
-    ReturnTypeSet = true;
-    returna_Integer64.push(value);
+		ResultTypeSet = true;
+    Result = value;
   }
 
-
   PyObject* result() {
-    PyObject* ret = 0;
-    if (returna_String.size()) {
-      Unicode unicode(returna_String.top());
-      return unicode.to_unicode();
-    }
-    else if (returna_Integer64.size()) {
-
-    }
-    else if (returna_Decimal80.size()) {
-
-    }
-    else if (returna_HugeInteger.size()) {
-
-    }
-    else if (returna_HugeDecimal.size()) {
-
-    }
-    if (ret == 0) {
-      Py_INCREF(Py_None);
-      return Py_None;
-    }
-    return ret;
+    return Result.toPyObject();
   };
 
 private:
 
-  bool ReturnTypeSet;
-
-  std::stack<String_UTF32> returna_String;
-  std::stack<Integer64BIT> returna_Integer64;
-  std::stack<Decimal80BIT> returna_Decimal80;
-  std::stack<Integer_Huge> returna_HugeInteger;
-  std::stack<Decimal_Huge> returna_HugeDecimal;
+  bool ResultTypeSet;
 
 };
 
@@ -404,7 +487,7 @@ private:
 //  MIT License
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this softwareand associated documentation files(the "Software"), to deal
+//  of this software and associated documentation files(the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
 //  copies of the Software, and to permit persons to whom the Software is

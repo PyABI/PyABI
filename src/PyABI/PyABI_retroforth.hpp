@@ -201,7 +201,8 @@ private:
     VM_AND, VM_OR, VM_XOR, VM_SHIFT, VM_ZRET, VM_HALT, VM_IE,
     VM_IQ, VM_II
   };
-#define NUM_OPS VM_II + 1
+
+  #define NUM_OPS VM_II + 1
 
   void inst_nop() {
   }

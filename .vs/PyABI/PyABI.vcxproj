@@ -99,6 +99,8 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Python36\include</IncludePath>
     <GenerateManifest>false</GenerateManifest>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Python36\libs</LibraryPath>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>CppCoreCheckRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

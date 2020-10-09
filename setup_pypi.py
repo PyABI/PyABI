@@ -9,7 +9,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="PyABI",
     version="0.0.42",
-    author="Scott McCallum (https github.com scott91e1)",
+    author="Scott McCallum (github.com scott91e1)",
     author_email="262464@195387.com",
     description="Core Implimation of the C++ PyABI Specification PEP-TBA",
     long_description=long_description,

@@ -22,10 +22,10 @@ public:
 
     };
 
-    void AtomicResultsPush(ResultBundle& result) {
+    void Return(ResultBundle& result) {
       Mutex.lock();
       try {
-        Results.push(result);
+        Returns.push(result);
       }
       catch (...) {
 
@@ -34,37 +34,41 @@ public:
     }
 
 
-    void hello_world(const size_t CallID, const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
+    void hello_world(const uint64_t CallID, const List& args, const Dict& kwargs, const Tuple& defargs) {
         ResultBundle Result(CallID);
         
         /***
 
-        do some work
+        do some work on the background thread
 
         ***/
 
-        AtomicResultsPush(Result);
+        Return(Result);
     }
-    size_t hello_world__(const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
-        const size_t ID = NextID++;
-        Threads.enqueue(std::bind(&Singleton::hello_world, this, ID, Args, kwArgs, DefaultArgs));
+    uint64_t hello_world__(const List& args, const Dict& kwargs = Dict(), const Tuple& defargs = Tuple()) {
+        const uint64_t ID = NextID++;
+        Threads.enqueue(std::bind(&Singleton::hello_world, this, ID, args, kwargs, defargs));
         return ID;
     };
 
-    void hello(const size_t CallID, const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
+    void hello(const uint64_t CallID, const List& Args, const Dict& kwArgs, const Tuple& defargs) {
         ResultBundle Result(CallID);
+
+        const char* name = "scott";
+
+        std::cout << "Hello, " << name << std::endl;
 
         /***
 
-        do some work
+        do some work on the background thread
 
         ***/
 
-        AtomicResultsPush(Result);
+        Return(Result);
     }
-    size_t hello__(const List& Args, const Dictionay& kwArgs, const List& DefaultArgs) {
-        const size_t ID = NextID++;
-        Threads.enqueue(std::bind(&Singleton::hello, this, ID, Args, kwArgs, DefaultArgs));
+    uint64_t hello__(const List& args, const Dict& kwargs = Dict(), const Tuple& defargs = Tuple()) {
+        const uint64_t ID = NextID++;
+        Threads.enqueue(std::bind(&Singleton::hello, this, ID, args, kwargs, defargs));
         return ID;
     };
 
@@ -72,9 +76,9 @@ private:
 
     std::mutex Mutex;
 
-    std::atomic<size_t> NextID;
+    std::atomic<uint64_t> NextID;
 
-    std::queue<ResultBundle> Results;
+    std::queue<ResultBundle> Returns;
 
     ThreadPool Threads{ PyABI_threads };
 
@@ -82,12 +86,12 @@ private:
 
 static Singleton SingletonInstance;
 
-size_t hello_world__(PyObject* args, PyObject* kwargs, PyObject* defaultargs) {
-    return SingletonInstance.hello_world__(args, kwargs, defaultargs);
+uint64_t hello_world__(PyObject* args, PyObject* kwargs, PyObject* defargs) {
+    return SingletonInstance.hello_world__(args, kwargs, defargs);
 };
 
-size_t hello__(PyObject* args, PyObject* kwargs, PyObject* defaultargs) {
-    return SingletonInstance.hello__(args, kwargs, defaultargs);
+uint64_t hello__(PyObject* args, PyObject* kwargs, PyObject* defargs) {
+    return SingletonInstance.hello__(args, kwargs, defargs);
 };
 
 
@@ -97,7 +101,7 @@ size_t hello__(PyObject* args, PyObject* kwargs, PyObject* defaultargs) {
 //  MIT License
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this softwareand associated documentation files(the "Software"), to deal
+//  of this software and associated documentation files(the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
 //  copies of the Software, and to permit persons to whom the Software is

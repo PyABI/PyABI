@@ -6,19 +6,11 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 ***/
 
-/***
-
-instruct the compiler to actually complile the source
-
-***/
-
-#define PyABI_INCLUDE 1
-
 #include <string>
 #include <sstream>
 #include <iostream>
 
-/*
+/***
 
 by default we are going to have a small number of workers
 
@@ -26,15 +18,13 @@ its also possible to match the number of cores on the host with:
 
 auto PyABI_threads = std::thread::hardware_concurrency();
 
-*/
+***/
 
 auto PyABI_threads = 4;
 
 #include "PyABI.hpp"
 
 #include "src/PyABI/PyABI_singleton.hpp"
-
-//static Singleton::Instance = Singleton();
 
 #include "src/PyABI/PyABI_body.hpp"
 
@@ -54,28 +44,27 @@ static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs)
   PY_DEFAULT_ARGUMENT_SET(the_id);
   PY_DEFAULT_ARGUMENT_SET(must_log);
 
-  PyObject* defaultargs = PyList_New(3);
-  PyList_SetItem(defaultargs, 0, encoding);
-  PyList_SetItem(defaultargs, 1, the_id);
-  PyList_SetItem(defaultargs, 2, must_log);
+	uint64_t call_id = 0;
+
+  PyObject* defargs = PyList_New(3);
+  PyList_SetItem(defargs, 0, encoding);
+  PyList_SetItem(defargs, 1, the_id);
+  PyList_SetItem(defargs, 2, must_log);
   auto dispatch_success = false;
   try {
-    hello_world__(args, kwargs, defaultargs);
-    //auto callback = std::bind(&Singleton::hello, singleton, std::placeholders::_1);
-    //singleton.PyABI_dispatch(module, args, kwargs, defaultargs, "hello_world", callback);
+    call_id = hello_world__(args, kwargs, defargs);
     dispatch_success = true;
   }
   catch (...) {
 
   };
-  Py_DECREF(defaultargs);
+  Py_DECREF(defargs);
 
   Py_DECREF(encoding);
   Py_DECREF(the_id);
   Py_DECREF(must_log);
 
-  Py_INCREF(Py_None);
-  return Py_None;
+  return PyLong_FromUnsignedLong(call_id);
 }
 
 
@@ -85,25 +74,25 @@ static PyObject* hello(PyObject* module, PyObject* args, PyObject* kwargs) {
     return NULL;
   }
 
-  PyObject* defaultargs = PyList_New(0);
+	uint64_t call_id = 0;
+
+  PyObject* defargs = PyList_New(0);
   auto dispatch_success = false;
   try {
-    hello__(args, kwargs, defaultargs);
+    call_id = hello__(args, kwargs, defargs);
     dispatch_success = true;
   }
   catch (...) {
 
   };
-  Py_DECREF(defaultargs);
-
-  printf("Hello, %s!\n", name);
+  Py_DECREF(defargs);
 
   Py_INCREF(Py_None);
   return Py_None;
 }
 
-static PyObject* PyABI_main(PyObject* module, PyObject* args, PyObject* kwargs);
-static PyObject* PyABI_stop(PyObject* module, PyObject* args, PyObject* kwargs);
+//static PyObject* PyABI_main(PyObject* module, PyObject* args, PyObject* kwargs);
+//static PyObject* PyABI_stop(PyObject* module, PyObject* args, PyObject* kwargs);
 
 static PyMethodDef abi_methods[] = {
     {
@@ -288,7 +277,7 @@ int main(int argc, char** argv) {
 //  MIT License
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
-//  of this softwareand associated documentation files(the "Software"), to deal
+//  of this software and associated documentation files(the "Software"), to deal
 //  in the Software without restriction, including without limitation the rights
 //  to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
 //  copies of the Software, and to permit persons to whom the Software is

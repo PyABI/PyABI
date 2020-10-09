@@ -5,7 +5,7 @@ sys.exit(0)
 
 import_ok = False
 try:
-    import PyCPU_RETRO70Z_ID0000_CPP
+    import PyCPU_RETRO70Z_ID0000_pyd
     import_ok = True
 except:
     pass
