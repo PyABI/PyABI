@@ -4,6 +4,8 @@ License: MIT License
 
 Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
+Ethos: http://utf8everywhere.org
+
 ***/
 
 #pragma once
@@ -11,12 +13,13 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
+#include <exception>
+
 #include <map>
 #include <queue>
 #include <array>
 #include <stack>
 #include <vector>
-//#include <unique>
 
 #include <future>
 #include <thread>
@@ -25,260 +28,136 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 #include <functional>
 #include <condition_variable>
 
+#include "../boost/nowide/convert.hpp"
+using namespace boost::nowide;
+
 #include "../ttmath/ttmath.h"
+typedef ttmath::Int<256> Integer_Huge;
 
 #include "../safeint/safeint.hpp"
-
-typedef long double Decimal80BIT;
-typedef std::u32string String;
-typedef ttmath::Int<256> Integer_Huge;
-typedef ttmath::Big<8, 8> Decimal_Huge;
-typedef SafeInt<long long int> Integer64BIT;
+typedef SafeInt<int32_t> Integer_Safe32;
+typedef SafeInt<int64_t> Integer_Safe64;
 
 struct StringHash {
 
-  template <size_t N, size_t I>
-  struct HashHelper
-  {
-    constexpr static size_t Calculate(const char(&str)[N])
-    {
-      return (HashHelper<N, I - 1>::Calculate(str) ^ (str[I - 1] & 0xFF)) * StringHash::PRIME;
-    }
-  };
+	template <size_t N, size_t I>
+	struct HashHelper
+	{
+		constexpr static size_t Calculate(const char(&str)[N])
+		{
+			return (HashHelper<N, I - 1>::Calculate(str) ^ (str[I - 1] & 0xFF)) * StringHash::PRIME;
+		}
+	};
 
-  template <size_t N>
-  struct HashHelper<N, 1>
-  {
-    constexpr static size_t Calculate(const char(&str)[N])
-    {
-      return (StringHash::OFFSET ^ (str[0] & 0xFF)) * StringHash::PRIME;
-    }
-  };
+	template <size_t N>
+	struct HashHelper<N, 1>
+	{
+		constexpr static size_t Calculate(const char(&str)[N])
+		{
+			return (StringHash::OFFSET ^ (str[0] & 0xFF)) * StringHash::PRIME;
+		}
+	};
 
-  template<size_t N>
-  constexpr static size_t StaticHash(const char(&str)[N])
-  {
-    return HashHelper<N, N>::Calculate(str);
-  }
-  static const size_t OFFSET = 0x01234567;
-  static const size_t PRIME = 0x89ABCDEF;
+	template<size_t N>
+	constexpr static size_t StaticHash(const char(&str)[N])
+	{
+		return HashHelper<N, N>::Calculate(str);
+	}
+	static const size_t OFFSET = 0x01234567;
+	static const size_t PRIME = 0x89ABCDEF;
 };
 
 static size_t StringHash__Dynamic(const char* str) {
-  size_t R = (StringHash::OFFSET ^ (*str & 0xFF)) * StringHash::PRIME;
-  while (*str++) {
-    R = (R ^ (*str & 0xFF)) * StringHash::PRIME;
-  }
-  return R;
+	size_t R = (StringHash::OFFSET ^ (*str & 0xFF)) * StringHash::PRIME;
+	while (*str++) {
+		R = (R ^ (*str & 0xFF)) * StringHash::PRIME;
+	}
+	return R;
 }
 
-struct Unicode {
+static size_t IntegerHash__Dynamic(int64_t value) {
+	value = abs(value);
+	size_t R = (StringHash::OFFSET ^ (value & 0xFF)) * StringHash::PRIME;
+	while (value) {
+		value >>= 8;
+		R = (R ^ (value & 0xFF)) * StringHash::PRIME;
+	}
+	return R;
+}
 
-  String Value;
+/*
+static size_t IntegerHash__Dynamic(Integer_Huge value) {
+	value = value.Abs();
+	size_t R = (StringHash::OFFSET ^ (value.BitAnd(0xff).ToInt())) * StringHash::PRIME;
+	while (value > 0) {
+		value >>= 8;
+		R = (R ^ (value & 0xFF)) * StringHash::PRIME;
+	}
+	return R;
+}
+*/
 
-  Unicode(String value) : Value(value) {
+/***
 
-  };
+https://code.activestate.com/recipes/577985
 
-  Unicode(PyObject* object) {
+An unique_ptr that, instead of deleting, decrements the reference count of a PyObject pointer.
 
-  };
+Make sure to only use this when you get a *new* reference (Py_INCREF or getting the result of
+any function that says it returns a new reference to a PyObject), NOT for "borrowed" references.
 
-  PyObject* to_unicode() {
-    PyObject* result = 0;
-    Py_UCS4 maxchar = 0;
-    for (String::iterator it = Value.begin(); it != Value.end(); ++it) {
-      if (*it > maxchar) {
-        maxchar = *it;
-      }
-    }
-    result = PyUnicode_New(Value.length() + 1, maxchar);
-    for (String::iterator it = Value.begin(); it != Value.end(); ++it) {
-      //PyUnicode_WRITE()
-    }
-    return result;
-  };
+***/
 
+typedef std::unique_ptr<PyObject> auto_pyptr_base;
+class auto_pyptr : public auto_pyptr_base {
+public:
+	auto_pyptr(PyObject* obj = nullptr) : auto_pyptr_base(obj) {
+	}
+	~auto_pyptr() {
+		reset();
+	}
+	void reset(PyObject* obj = nullptr) {
+		if (obj != get()) {
+			PyObject* old = release(); // Avoid the delete call
+			Py_XDECREF(old);
+			auto_pyptr_base::reset(obj);
+		}
+	}
+	void inc() override {
+		PyObject* ptr = get();
+		if (ptr)
+			Py_INCREF(ptr);
+	}
+	operator PyObject* () {
+		return this->get();
+	}
 };
 
-class List;
-class Tuple;
-class Dictionay;
+class Object;
 
-class Object {
-
-  public:
-
-		bool isNone() { 
-      return m_Object->TypeHash == StringHash::StaticHash("None"); 
-    }
-
-  private:
-
-    class Object_ABC {
-
-      public:
-
-        Object_ABC(const char *type, int32_t typeHash) 
-          : Type(type), TypeHash(typeHash) {
-
-        }
-
-				const char* Type;
-
-        const int32_t TypeHash;
-
-        virtual PyObject* toPyObject() = 0;
-
-		    virtual void toInteger(int32_t&) {
-
-		    };
-
-		    virtual void toInteger(int64_t&) {
-
-		    };
-
-    };
-
-		std::unique_ptr<Object_ABC> m_Object;
-
-	  class Object_None : public Object_ABC {
-
-	    public:
-
-        Object_None() : Object_ABC("None", StringHash::StaticHash("None")) {
-
-        }
-
-		    PyObject* toPyObject() override {
-          Py_INCREF(Py_None);
-			    return Py_None;
-		    }
-
-	  };
-
-    class Object_Integer : public Object_ABC {
-
-      public:
-
-				Object_Integer(const int64_t& value = 0)
-					: Object_ABC("Integer", StringHash::StaticHash("Integer")), m_Value(value) {
-
-				}
-
-        PyObject* toPyObject() override {
-          return PyLong_FromLongLong(m_Value);
-        }
-  
-    private:
-
-      int64_t m_Value;
-
-    };
-
-
-		/***
-
-    sanity check:
-
-    this switch statement will fail to compile if any of the strings produce the same hash
-
-		***/
-
-    void __sanity_check__all_hashes_are_unique__() {
-      switch (int32_t value = 0) {
-			  case StringHash::StaticHash("None"):
-			  case StringHash::StaticHash("List"):
-			  case StringHash::StaticHash("Dict"):
-				case StringHash::StaticHash("Tuple"):
-				case StringHash::StaticHash("String"):
-			  case StringHash::StaticHash("Decimal"):
-				case StringHash::StaticHash("Integer"):
-				case StringHash::StaticHash("PyObject"):
-      }
-    }
-
-  public:
-
-	  // By default its a Python None object
-	  Object()
-		  : m_Object(new Object_None()) {
-
-	  };
-
-		Object(const List& value)
-			: m_Object(new Object_None()) {
-
-		};
-
-		Object(const Tuple& value)
-			: m_Object(new Object_None()) {
-
-		};
-
-		Object(const Dictionay& value)
-			: m_Object(new Object_None()) {
-
-		};
-
-	  Object(const int32_t &value)
-		  : m_Object(new Object_Integer(value)) {
-
-	  };
-
-    Object(const int64_t &value)
-		  : m_Object(new Object_Integer(value)) {
-
-	  };
-
-	  PyObject* toPyObject() {
-		  return m_Object->toPyObject();
-	  };
-
-
-  };
-
-
-struct Dict {
-
-  Dict() {
-
-  };
-
-  Dict(PyObject* object) {
-
-  };
-
-  PyObject* toPyDict() {
-
-  };
-
-private:
-
-  std::map<String, Object> Objects;
+struct PyABI_Exception : public std::exception {
 
 };
 
 struct List {
 
-  List() {
+	List() {
 
-  };
+	};
 
-  List(PyObject* object) {
+	List(PyObject* object) {
 
-  };
+	};
 
-  PyObject* toPyList() {
+	PyObject* toPyList() {
 
-  };
+	};
 
 private:
 
-  std::map<size_t, Object> Objects;
+	std::vector<Object> m_objects;
 
 };
-
 
 struct Tuple {
 
@@ -296,48 +175,401 @@ struct Tuple {
 
 private:
 
-	std::map<size_t, Object> Objects;
+	std::vector<Object> m_objects;
+
+};
+
+struct Dict {
+
+	Dict() {
+
+	};
+
+	Dict(PyObject* object) {
+
+	};
+
+	PyObject* toPyDict() {
+
+	};
+
+private:
+
+	// std::map<std::string, Object> stringKeys;
+
+	std::unordered_map<Object, Object, Object::HashFunction> m_objects;
+
+};
+
+class Object {
+
+public:
+
+	inline PyObject* toPyObject() const {
+		return m_object->toPyObject();
+	};
+
+	inline bool isNone() const {
+		return m_object->TypeHash == StringHash::StaticHash("None");
+	}
+
+	inline bool isBool() const {
+		return m_object->TypeHash == StringHash::StaticHash("Bool");
+	}
+
+	inline bool isString() const {
+		return m_object->TypeHash == StringHash::StaticHash("String");
+	}
+
+	Object()
+		: m_object(new Object_None()) {
+		// create a None object by default
+	};
+
+	Object(PyObject* object) {
+		if (object == Py_None) {
+			m_object.reset(new Object_None);
+		} 
+		else if (object == Py_True || object == Py_False) {
+			m_object.reset(new Object_Bool(object == Py_True));
+		}
+		else if (PyLong_Check(object)) {
+			int overflow = 0;
+			long long value = PyLong_AsLongLongAndOverflow(object, &overflow);
+			if (overflow == 0) {
+				m_object.reset(new Object_Integer(value));
+			}
+			else {
+				m_object.reset(new Object_Integer_Huge(object));
+			}
+		}
+		else if (PyUnicode_Check(object)) {
+
+		}
+		else if (PyTuple_Check(object)) {
+
+		}
+		else if (PyList_Check(object)) {
+
+		}
+		else if (PyDict_Check(object)) {
+
+		}
+		else {
+
+		};
+
+	};
+
+	Object(const Dict& value)
+		: m_object(new Object_None()) {
+
+	};
+
+	Object(const List& value)
+		: m_object(new Object_None()) {
+
+	};
+
+	Object(const Tuple& value)
+		: m_object(new Object_None()) {
+
+	};
+
+	Object(const int32_t& value)
+		: m_object(new Object_Integer(value)) {
+
+	};
+
+	Object(const int64_t& value)
+		: m_object(new Object_Integer(value)) {
+
+	};
+
+	Object(const std::string& value)
+		: m_object(new Object_String(value)) {
+
+	};
+
+	bool operator==(const Object& other) const
+	{
+		return m_object->equals(other);
+	}
+
+	size_t hash() const {
+		return m_object->hash();
+	}
+
+	struct HashFunction
+	{
+		size_t operator()(const Object& object) const
+		{
+			return object.hash();
+		}
+	};
+
+private:
+
+	class Object_ABC {
+
+	public:
+
+		const char* Type;
+
+		const int32_t TypeHash;
+
+		Object_ABC(const char* type, int32_t typeHash)
+			: Type(type), TypeHash(typeHash) {
+
+		}
+
+		virtual bool equals(const Object& other) const { return false; }
+
+		virtual int32_t hash() const = 0;
+
+		virtual PyObject* toPyObject() = 0;
+
+		virtual Integer_Safe32 toInt32() {
+			return toInt64();
+		};
+
+		virtual Integer_Safe64 toInt64() {
+			return toIntHuge();
+		};
+
+		virtual Integer_Huge toIntHuge() {
+			throw new PyABI_Exception;
+		};
+
+	};
+
+	std::shared_ptr<Object_ABC> m_object;
+
+	class Object_None : public Object_ABC {
+
+	public:
+
+		Object_None()
+			: Object_ABC("None", StringHash::StaticHash("None")) {
+
+		}
+
+		int32_t hash() const override {
+			return 0;
+		}
+
+		PyObject* toPyObject() override {
+			Py_INCREF(Py_None);
+			return Py_None;
+		}
+
+	};
+
+
+	class Object_Bool : public Object_ABC {
+
+	public:
+
+		Object_Bool(bool value = false)
+			: Object_ABC("Bool", StringHash::StaticHash("Bool"))
+			, m_value(value) {
+
+		}
+
+		int32_t hash() const override {
+			return m_value ? 1 : 0;
+		}
+
+		PyObject* toPyObject() override {
+			if (m_value) {
+				Py_INCREF(Py_True);
+				return Py_True;
+			} else {
+				Py_INCREF(Py_False);
+				return Py_False;
+			}
+		}
+
+	private:
+		
+		bool m_value;
+
+	};
+
+
+	class Object_String : public Object_ABC {
+
+	public:
+
+		Object_String(const std::string& value)
+			: Object_ABC("String", StringHash::StaticHash("String"))
+			, m_value(value) {
+
+		}
+
+		Object_String(const std::wstring& value)
+			: Object_ABC("String", StringHash::StaticHash("String"))
+			, m_value(narrow(value)) {
+
+		}
+
+		int32_t hash() const override {
+			return StringHash__Dynamic(m_value.c_str());
+		}
+
+		PyObject* toPyObject() override {
+			Py_INCREF(Py_None);
+			return Py_None;
+		}
+
+	private:
+
+		std::string m_value;
+
+	};
+
+
+	class Object_Integer : public Object_ABC {
+
+	public:
+
+		Object_Integer(const int64_t& value = 0)
+			: Object_ABC("Integer", StringHash::StaticHash("Integer")), m_value(value) {
+
+		}
+
+		int32_t hash() const override {
+			return IntegerHash__Dynamic(m_value);
+		}
+
+		PyObject* toPyObject() override {
+			return PyLong_FromLongLong(m_value);
+		}
+
+	private:
+
+		int64_t m_value;
+
+	};
+
+	class Object_Integer_Huge : public Object_ABC {
+
+	public:
+
+		Object_Integer_Huge(const Integer_Huge& value = 0)
+			: Object_ABC("Integer", StringHash::StaticHash("Integer"))
+			, m_value(value) {
+
+		}
+
+		Object_Integer_Huge(PyObject* object)
+			: Object_ABC("Integer", StringHash::StaticHash("Integer")) {
+
+			if (PyLong_Check(object)) {
+				int overflow = 0;
+				long long value = PyLong_AsLongLongAndOverflow(object, &overflow);
+				if (overflow == 0) {
+					m_value = value;
+					return;
+				}
+			}
+
+			auto_pyptr __repr__ = PyObject_Repr(object);
+			const char* repr_utf8 = PyUnicode_AsUTF8(__repr__);
+			if (!repr_utf8) throw new PyABI_Exception;
+			m_value.FromString(repr_utf8);
+		}
+
+		int32_t hash() const override {
+			// TODO: fixme
+			return IntegerHash__Dynamic(m_value.ToInt());
+		}
+
+		PyObject* toPyObject() override {
+			if (m_value > std::numeric_limits<long long>::max() || m_value < std::numeric_limits<long long>::min()) {
+				std::string value;
+				m_value.ToString(value);
+				return PyLong_FromString(value.c_str(), nullptr, 10);
+			}
+			else {
+				long long value;
+				m_value.ToInt(value);
+				return PyLong_FromLongLong(value);
+			}
+		}
+
+	private:
+
+		Integer_Huge m_value;
+
+	};
+
+	/***
+
+	this switch statement will fail to compile if any of the strings produce the same hash
+
+	***/
+
+	void SANITY_CHECK__all_names_hash_uniquely() {
+		switch (int32_t value = 0) {
+		case StringHash::StaticHash("None"):
+		case StringHash::StaticHash("Bool"):
+		case StringHash::StaticHash("List"):
+		case StringHash::StaticHash("Dict"):
+		case StringHash::StaticHash("Tuple"):
+		case StringHash::StaticHash("Bytes"):
+		case StringHash::StaticHash("String"):
+		case StringHash::StaticHash("Integer"):
+		case StringHash::StaticHash("Decimal"):
+		case StringHash::StaticHash("Complex"):
+		case StringHash::StaticHash("Unknown"):
+		case StringHash::StaticHash("Results"):
+		}
+	}
+
+public:
+
 
 };
 
 
-class ResultBundle {
+class Results {
 
 public:
 
-  ResultBundle(const size_t call_id) 
-    : CallID(call_id), 
-    Success(false), ResultTypeSet(false) {
+	Results(const size_t call_id)
+		: CallID(call_id),
+		Success(false), ResultTypeSet(false) {
 
-  };
+	};
 
-  const size_t CallID;
+	const size_t CallID;
 
-  bool Success;
+	bool Success;
 
 	Object Result;
 
 	List Results;
 
-  Dict kwResults;
+	Dict kwResults;
 
-  void Return(String& value) {
+	void Return(String& value) {
 		ResultTypeSet = true;
-    Result = Object(value.c_str());
-  }
+		Result = Object(value.c_str());
+	}
 
-  void Return(Integer64BIT& value) {
+	void Return(Integer64BIT& value) {
 		ResultTypeSet = true;
-    Result = value;
-  }
+		Result = value;
+	}
 
-  PyObject* result() {
-    return Result.toPyObject();
-  };
+	PyObject* result() {
+		return Result.toPyObject();
+	};
 
 private:
 
-  bool ResultTypeSet;
+	bool ResultTypeSet;
 
 };
 
@@ -369,100 +601,100 @@ class ThreadPool final
 {
 public:
 
-  explicit ThreadPool(std::size_t nthreads = std::thread::hardware_concurrency()) :
-    m_enabled(true),
-    m_pool(nthreads)
-  {
-    run();
-  }
+	explicit ThreadPool(std::size_t nthreads = std::thread::hardware_concurrency()) :
+		m_enabled(true),
+		m_pool(nthreads)
+	{
+		run();
+	}
 
-  ~ThreadPool()
-  {
-    stop();
-  }
+	~ThreadPool()
+	{
+		stop();
+	}
 
-  ThreadPool(ThreadPool const&) = delete;
-  ThreadPool& operator=(const ThreadPool&) = delete;
+	ThreadPool(ThreadPool const&) = delete;
+	ThreadPool& operator=(const ThreadPool&) = delete;
 
-  template<class TaskT>
-  auto enqueue(TaskT task) -> std::future<decltype(task())>
-  {
-    using ReturnT = decltype(task());
-    auto promise = std::make_shared<std::promise<ReturnT>>();
-    auto result = promise->get_future();
+	template<class TaskT>
+	auto enqueue(TaskT task) -> std::future<decltype(task())>
+	{
+		using ReturnT = decltype(task());
+		auto promise = std::make_shared<std::promise<ReturnT>>();
+		auto result = promise->get_future();
 
-    auto t = [p = std::move(promise), t = std::move(task)]() mutable { execute(*p, t); };
+		auto t = [p = std::move(promise), t = std::move(task)]() mutable { execute(*p, t); };
 
-    {
-      std::lock_guard<std::mutex> lock(m_mu);
-      m_tasks.push(std::move(t));
-    }
+		{
+			std::lock_guard<std::mutex> lock(m_mu);
+			m_tasks.push(std::move(t));
+		}
 
-    m_cv.notify_one();
+		m_cv.notify_one();
 
-    return result;
-  }
+		return result;
+	}
 
 private:
 
-  std::mutex m_mu;
-  std::condition_variable m_cv;
+	std::mutex m_mu;
+	std::condition_variable m_cv;
 
-  bool m_enabled;
-  std::vector<std::thread> m_pool;
-  std::queue<std::function<void()>> m_tasks;
+	bool m_enabled;
+	std::vector<std::thread> m_pool;
+	std::queue<std::function<void()>> m_tasks;
 
-  template<class ResultT, class TaskT>
-  static void execute(std::promise<ResultT>& p, TaskT& task)
-  {
-    p.set_value(task()); // syntax doesn't work with void ResultT :(
-  }
+	template<class ResultT, class TaskT>
+	static void execute(std::promise<ResultT>& p, TaskT& task)
+	{
+		p.set_value(task()); // syntax doesn't work with void ResultT :(
+	}
 
-  template<class TaskT>
-  static void execute(std::promise<void>& p, TaskT& task)
-  {
-    task();
-    p.set_value();
-  }
+	template<class TaskT>
+	static void execute(std::promise<void>& p, TaskT& task)
+	{
+		task();
+		p.set_value();
+	}
 
-  void stop()
-  {
-    {
-      std::lock_guard<std::mutex> lock(m_mu);
-      m_enabled = false;
-    }
+	void stop()
+	{
+		{
+			std::lock_guard<std::mutex> lock(m_mu);
+			m_enabled = false;
+		}
 
-    m_cv.notify_all();
+		m_cv.notify_all();
 
-    for (auto& t : m_pool)
-      t.join();
-  }
+		for (auto& t : m_pool)
+			t.join();
+	}
 
-  void run()
-  {
-    auto f = [this]()
-    {
-      while (true)
-      {
-        std::unique_lock<std::mutex> lock{ m_mu };
-        m_cv.wait(lock, [&]() { return !m_enabled || !m_tasks.empty(); });
+	void run()
+	{
+		auto f = [this]()
+		{
+			while (true)
+			{
+				std::unique_lock<std::mutex> lock{ m_mu };
+				m_cv.wait(lock, [&]() { return !m_enabled || !m_tasks.empty(); });
 
-        if (!m_enabled)
-          break;
+				if (!m_enabled)
+					break;
 
-        assert(!m_tasks.empty());
+				assert(!m_tasks.empty());
 
-        auto task = std::move(m_tasks.front());
-        m_tasks.pop();
+				auto task = std::move(m_tasks.front());
+				m_tasks.pop();
 
-        lock.unlock();
-        task();
-      }
-    };
+				lock.unlock();
+				task();
+			}
+		};
 
-    for (auto& t : m_pool)
-      t = std::thread(f);
-  }
+		for (auto& t : m_pool)
+			t = std::thread(f);
+	}
 };
 
 

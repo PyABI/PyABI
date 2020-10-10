@@ -13,6 +13,8 @@ Author: Copyright (c) 2011,      Kenneth Keating
 
 #pragma once
 
+#include "PyABI_retroforth_bios.hpp"
+
 #include <iostream>
 #include <algorithm>
 #include <iterator>
@@ -52,7 +54,7 @@ class RETRO_VM {
 
 public:
 
-  RETRO_VM(CELL CELL_MIN, CELL CELL_MAX)
+  RETRO_VM(int *bios = &retro_bios, CELL CELL_MIN = 0, CELL CELL_MAX = 0)
     : ip(0), sp(0), rp(0)
     , image_size(IMAGE_SIZE + 1), cell_min(CELL_MIN), cell_max(CELL_MAX)
   {
