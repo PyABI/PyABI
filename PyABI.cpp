@@ -31,29 +31,26 @@ auto PyABI_threads = 4;
 // Module method definitions
 static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs) {
 
-  PY_DEFAULT_ARGUMENT_INIT(encoding, PyUnicode_FromString("utf-8"), NULL);
-  PY_DEFAULT_ARGUMENT_INIT(the_id, PyLong_FromLong(0L), NULL);
-  PY_DEFAULT_ARGUMENT_INIT(must_log, PyBool_FromLong(1L), NULL);
+  PY_DEFAULT_ARGUMENT_INIT(encoding, PyUnicode_FromString("utf-8"), nullptr);
+  PY_DEFAULT_ARGUMENT_INIT(the_id, PyLong_FromLong(0L), nullptr);
+  PY_DEFAULT_ARGUMENT_INIT(must_log, PyBool_FromLong(1L), nullptr);
 
-  static const char* kwlist[] = { "encoding", "the_id", "must_log", NULL };
+  static const char* kwlist[] = { "encoding", "the_id", "must_log", nullptr };
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "|Oip", const_cast<char**>(kwlist), &encoding, &the_id, &must_log)) {
-    return NULL;
+    return nullptr;
   }
 
   PY_DEFAULT_ARGUMENT_SET(encoding);
   PY_DEFAULT_ARGUMENT_SET(the_id);
   PY_DEFAULT_ARGUMENT_SET(must_log);
 
-	uint64_t call_id = 0;
-
   PyObject* defargs = PyList_New(3);
   PyList_SetItem(defargs, 0, encoding);
   PyList_SetItem(defargs, 1, the_id);
   PyList_SetItem(defargs, 2, must_log);
-  auto dispatch_success = false;
+	uint64_t call_id = 0;
   try {
     call_id = hello_world__(args, kwargs, defargs);
-    dispatch_success = true;
   }
   catch (...) {
 
@@ -71,16 +68,14 @@ static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs)
 static PyObject* hello(PyObject* module, PyObject* args, PyObject* kwargs) {
   const char* name;
   if (!PyArg_ParseTuple(args, "s", &name)) {
-    return NULL;
+    return nullptr;
   }
 
-	uint64_t call_id = 0;
 
   PyObject* defargs = PyList_New(0);
-  auto dispatch_success = false;
+	uint64_t call_id = 0;
   try {
     call_id = hello__(args, kwargs, defargs);
-    dispatch_success = true;
   }
   catch (...) {
 
@@ -103,7 +98,7 @@ static PyMethodDef abi_methods[] = {
         "hello", (PyCFunction)hello, METH_VARARGS | METH_KEYWORDS,
         "Print 'hello xxx' from a method defined in a C extension."
     },
-    {NULL, NULL, 0, NULL}
+    {nullptr, nullptr, 0, nullptr}
 };
 
 static struct PyModuleDef abi_definition = {

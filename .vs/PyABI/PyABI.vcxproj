@@ -91,6 +91,7 @@
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Python36\include</IncludePath>
     <GenerateManifest>false</GenerateManifest>
     <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Python36\libs</LibraryPath>
+    <SourcePath>$(VC_SourcePath);src</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -145,6 +146,8 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
