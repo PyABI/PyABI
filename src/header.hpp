@@ -25,12 +25,32 @@ Ethos: http://utf8everywhere.org
 #include <functional>
 #include <condition_variable>
 
-#include "ttmath/ttmath.h"
-using Integer_Huge = ttmath::Int<256>;
+//#include "ttmath/ttmath.h"
+//using Integer_Huge = ttmath::Int<256>;
+
+#define INTEGER_ENABLE_LITERALS 1
+#define INTEGER_THROW_ARITHMETIC_EXCEPTION 1
+#include <universal/integer/integer>
+using Integer_Huge = sw::unum::integer<1024>;
+
+#define POSIT_ENABLE_LITERALS 1
+#define POSIT_THROW_ARITHMETIC_EXCEPTION 1
+#include <universal/posit/posit>
+using Decimal = sw::unum::posit<128, 2>;
+
+//#include <universal/decimal/decimal.hpp>
+//using Decimal = sw::unum::decimal;
+
+//#include <universal/mpfloat/mpfloat.hpp>
+//using Decimal = sw::unum::mpfloat;
+
+//#include <universal/value/value.hpp>
+//using Decimal = sw::unum::value<64>;
+
 
 #include "safeint/safeint.hpp"
-using Integer_Safe32 = SafeInt<int32_t>;
-using Integer_Safe64 = SafeInt<int64_t>;
+using Safe_I32 = SafeInt<int32_t>;
+using Safe_I64 = SafeInt<int64_t>;
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
@@ -225,7 +245,7 @@ public:
 
 	};
 
-	Object(const Integer_Safe64& value)
+	Object(const std::int64_t& value)
 		: m_object(new Object_Integer(value)) {
 
 	};
@@ -262,26 +282,31 @@ private:
 
 		const int32_t TypeHash;
 
-		Object_ABC(const char* type, int32_t typeHash)
+		Object_ABC(const char* type, int32_t typeHash) noexcept
 			: Type(type), TypeHash(typeHash) {
 
 		}
 
-		virtual bool equals(const Object& other) const { return false; }
+		virtual ~Object_ABC() {
+
+		}
+
+		virtual bool equals(const Object& other) const noexcept { return false; }
 
 		virtual int32_t hash() const = 0;
 
 		virtual PyObject* toPyObject() = 0;
 
-		virtual Integer_Safe32 toInt32() {
+		virtual Safe_I32 toInt32() {
 			return toInt64();
 		};
 
-		virtual Integer_Safe64 toInt64() {
-			Integer_Huge huge = toIntHuge();
-			int64_t result;
-			huge.ToInt(result);
-			return result;
+		virtual Safe_I64 toInt64() {
+			const Integer_Huge huge = toIntHuge();
+			if (huge > Integer_Huge(std::numeric_limits<long long>::max()) || huge < Integer_Huge(std::numeric_limits<long long>::min())) {
+				throw new PyABI_Exception;
+			}
+			return (int64_t)huge;
 		};
 
 		virtual Integer_Huge toIntHuge() {
@@ -296,8 +321,12 @@ private:
 
 	public:
 
-		Object_None()
+		Object_None() noexcept
 			: Object_ABC("None", StringHash::StaticHash("None")) {
+
+		}
+
+		virtual ~Object_None() {
 
 		}
 
@@ -374,8 +403,10 @@ private:
 
 	public:
 
-		Object_Integer(const int64_t& value = 0)
+		Object_Integer(const long long& value = 0)
 			: Object_ABC("Integer", StringHash::StaticHash("Integer")), m_value(value) {
+
+			static_assert(sizeof(long long) == sizeof(std::int64_t));
 
 		}
 
@@ -389,7 +420,7 @@ private:
 
 	private:
 
-		int64_t m_value;
+		long long m_value;
 
 	};
 
@@ -418,24 +449,21 @@ private:
 			auto_pyptr __repr__ = PyObject_Repr(object);
 			const char* repr_utf8 = PyUnicode_AsUTF8(__repr__);
 			if (!repr_utf8) throw new PyABI_Exception;
-			m_value.FromString(repr_utf8);
+			m_value.assign(repr_utf8);
 		}
 
 		int32_t hash() const override {
 			// TODO: fixme
-			return IntegerHash__Dynamic(m_value.ToInt());
+			return IntegerHash__Dynamic((int64_t)m_value);
 		}
 
 		PyObject* toPyObject() override {
 			if (m_value > std::numeric_limits<long long>::max() || m_value < std::numeric_limits<long long>::min()) {
-				std::string value;
-				m_value.ToString(value);
+				std::string value = convert_to_decimal_string(m_value);
 				return PyLong_FromString(value.c_str(), nullptr, 10);
 			}
 			else {
-				long long value;
-				m_value.ToInt(value);
-				return PyLong_FromLongLong(value);
+				return PyLong_FromLongLong((int64_t)m_value);
 			}
 		}
 
@@ -581,7 +609,7 @@ public:
 		Result = Object(value);
 	}
 
-	void Return(Integer_Safe64& value) {
+	void Return(Safe_I64& value) {
 		ResultTypeSet = true;
 		Result = Object(value);
 	}

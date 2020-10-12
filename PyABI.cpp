@@ -221,6 +221,52 @@ int main(int argc, char** argv) {
     std::cout << "Verbosity enabled" << std::endl;
   }
 
+  Integer_Huge a, b, c, d;
+
+  a = 1000 * 1000;
+  b = a * a;
+	c = b * b;
+	d = c * c;
+
+	std::cout << a << std::endl;
+	std::cout << b << std::endl;
+	std::cout << c << std::endl;
+	std::cout << d << std::endl;
+
+  std::cout << "9223372036854775807" << std::endl;
+
+  std::cout << std::endl;
+
+  Decimal x, y(0.2), z, zeroPoint3;
+
+  std::string v;
+
+	v = ".1";
+  sw::unum::parse(v, x);
+
+	//v = ".2";
+	//sw::unum::parse(v, y);
+
+	z = x + y;
+
+	//v = ".3";
+	//sw::unum::parse(v, zeroPoint3);
+  zeroPoint3 = 0.3;
+
+	std::cout << std::setprecision(8);
+
+	std::cout << x << std::endl;
+	std::cout << y << std::endl;
+	std::cout << z << std::endl;
+
+	std::cout << "x == 0.1        " << ((x == 0.1) ? "T" : "F") << std::endl;
+	std::cout << "y == 0.2        " << ((y == 0.2) ? "T" : "F") << std::endl;
+	std::cout << "z == zeroPoint3 " << ((z == zeroPoint3) ? "T" : "F") << std::endl;
+	std::cout << "z - zeroPoint3  = " << z - zeroPoint3 << std::endl;
+
+
+
+
   /***
 
   threadPool.enqueue(spitId);
