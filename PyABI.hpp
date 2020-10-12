@@ -22,7 +22,7 @@ public:
 
     };
 
-    void Return(ResultBundle& result) {
+    void Return(Results& result) {
       Mutex.lock();
       try {
         Returns.push(result);
@@ -35,7 +35,7 @@ public:
 
 
     void hello_world(const uint64_t CallID, const List& args, const Dict& kwargs, const Tuple& defargs) {
-        ResultBundle Result(CallID);
+        Results Result(CallID);
 
         /***
 
@@ -52,7 +52,7 @@ public:
     };
 
     void hello(const uint64_t CallID, const List& Args, const Dict& kwArgs, const Tuple& defargs) {
-        ResultBundle Result(CallID);
+        Results Result(CallID);
 
         const char* name = "scott";
 
@@ -78,7 +78,7 @@ private:
 
     std::atomic<uint64_t> NextID;
 
-    std::queue<ResultBundle> Returns;
+    std::queue<Results> Returns;
 
     ThreadPool Threads{ PyABI_threads };
 

@@ -28,15 +28,25 @@ Ethos: http://utf8everywhere.org
 #include <functional>
 #include <condition_variable>
 
-#include "../boost/nowide/convert.hpp"
-using namespace boost::nowide;
-
 #include "../ttmath/ttmath.h"
-typedef ttmath::Int<256> Integer_Huge;
+using Integer_Huge = ttmath::Int<256>;
 
 #include "../safeint/safeint.hpp"
-typedef SafeInt<int32_t> Integer_Safe32;
-typedef SafeInt<int64_t> Integer_Safe64;
+//using Integer_Safe32 = SafeInt<int32_t>;
+//using Integer_Safe64 = SafeInt<int64_t>;
+
+//typedef SafeInt<int32_t> Integer_Safe32;
+//typedef SafeInt<int64_t> Integer_Safe64;
+
+typedef int32_t Integer_Safe32;
+typedef int64_t Integer_Safe64;
+
+
+/***
+
+
+
+***/
 
 struct StringHash {
 
@@ -108,7 +118,7 @@ any function that says it returns a new reference to a PyObject), NOT for "borro
 
 ***/
 
-typedef std::unique_ptr<PyObject> auto_pyptr_base;
+using auto_pyptr_base = std::unique_ptr<PyObject>;
 class auto_pyptr : public auto_pyptr_base {
 public:
 	auto_pyptr(PyObject* obj = nullptr) : auto_pyptr_base(obj) {
@@ -123,7 +133,7 @@ public:
 			auto_pyptr_base::reset(obj);
 		}
 	}
-	void inc() override {
+	void inc() {
 		PyObject* ptr = get();
 		if (ptr)
 			Py_INCREF(ptr);
@@ -133,73 +143,19 @@ public:
 	}
 };
 
-class Object;
+struct Dict;
+struct List;
+struct Tuple;
 
 struct PyABI_Exception : public std::exception {
 
 };
 
-struct List {
+/***
 
-	List() {
 
-	};
 
-	List(PyObject* object) {
-
-	};
-
-	PyObject* toPyList() {
-
-	};
-
-private:
-
-	std::vector<Object> m_objects;
-
-};
-
-struct Tuple {
-
-	Tuple() {
-
-	};
-
-	Tuple(PyObject* object) {
-
-	};
-
-	PyObject* toPyList() {
-
-	};
-
-private:
-
-	std::vector<Object> m_objects;
-
-};
-
-struct Dict {
-
-	Dict() {
-
-	};
-
-	Dict(PyObject* object) {
-
-	};
-
-	PyObject* toPyDict() {
-
-	};
-
-private:
-
-	// std::map<std::string, Object> stringKeys;
-
-	std::unordered_map<Object, Object, Object::HashFunction> m_objects;
-
-};
+***/
 
 class Object {
 
@@ -276,12 +232,7 @@ public:
 
 	};
 
-	Object(const int32_t& value)
-		: m_object(new Object_Integer(value)) {
-
-	};
-
-	Object(const int64_t& value)
+	Object(const Integer_Safe64& value)
 		: m_object(new Object_Integer(value)) {
 
 	};
@@ -334,7 +285,10 @@ private:
 		};
 
 		virtual Integer_Safe64 toInt64() {
-			return toIntHuge();
+			Integer_Huge huge = toIntHuge();
+			Integer_Safe64 result;
+			huge.ToInt(result);
+			return result;
 		};
 
 		virtual Integer_Huge toIntHuge() {
@@ -404,12 +358,6 @@ private:
 		Object_String(const std::string& value)
 			: Object_ABC("String", StringHash::StaticHash("String"))
 			, m_value(value) {
-
-		}
-
-		Object_String(const std::wstring& value)
-			: Object_ABC("String", StringHash::StaticHash("String"))
-			, m_value(narrow(value)) {
 
 		}
 
@@ -524,6 +472,7 @@ private:
 		case StringHash::StaticHash("Complex"):
 		case StringHash::StaticHash("Unknown"):
 		case StringHash::StaticHash("Results"):
+			break;
 		}
 	}
 
@@ -531,6 +480,89 @@ public:
 
 
 };
+
+
+/***
+
+
+
+***/
+
+struct List {
+
+	List() {
+
+	};
+
+	List(PyObject* object) {
+
+	};
+
+	PyObject* toPyList() {
+
+	};
+
+private:
+
+	std::vector<Object> m_objects;
+
+};
+
+/***
+
+
+
+***/
+
+struct Tuple {
+
+	Tuple() {
+
+	};
+
+	Tuple(PyObject* object) {
+
+	};
+
+	PyObject* toPyList() {
+
+	};
+
+private:
+
+	std::vector<Object> m_objects;
+
+};
+
+/***
+
+
+
+***/
+
+struct Dict {
+
+	Dict() {
+
+	};
+
+	Dict(PyObject* object) {
+
+	};
+
+	PyObject* toPyDict() {
+
+	};
+
+private:
+
+	// std::map<std::string, Object> stringKeys;
+
+	std::unordered_map<Object, Object, Object::HashFunction> m_objects;
+
+};
+
+
 
 
 class Results {
@@ -549,18 +581,16 @@ public:
 
 	Object Result;
 
-	List Results;
-
 	Dict kwResults;
 
-	void Return(String& value) {
+	void Return(const std::string& value) {
 		ResultTypeSet = true;
-		Result = Object(value.c_str());
+		Result = Object(value);
 	}
 
-	void Return(Integer64BIT& value) {
+	void Return(Integer_Safe64& value) {
 		ResultTypeSet = true;
-		Result = value;
+		Result = Object(value);
 	}
 
 	PyObject* result() {

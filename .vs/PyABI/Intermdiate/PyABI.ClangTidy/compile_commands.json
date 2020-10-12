@@ -1,0 +1,12 @@
+[
+  {
+    "directory": "C:\\DEV\\PyABI\\PyABI\\.vs\\PyABI",
+    "command": "\"C:\\Windows\\system32\\CL.exe\" \/c \/Zi \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Oi \/D CODE_ANALYSIS \/D NDEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MD \/GS \/fp:precise \/permissive- \/std:c++17 \/Fo\"Intermdiate\\\\\" \/Gd \/TP  \/permissive-  \"C:\\DEV\\PyABI\\PyABI\\PyABI.cpp\"",
+    "file": "C:\\DEV\\PyABI\\PyABI\\PyABI.cpp"
+  },
+  {
+    "directory": "C:\\DEV\\PyABI\\PyABI\\.vs\\PyABI",
+    "command": "\"C:\\Windows\\system32\\CL.exe\" \/c \/Zi \/nologo \/W4 \/WX- \/diagnostics:column \/O2 \/Oi \/D CODE_ANALYSIS \/D NDEBUG \/D _CONSOLE \/D _UNICODE \/D UNICODE \/EHsc \/MD \/GS \/fp:precise \/permissive- \/std:c++17 \/Fo\"Intermdiate\\\\\" \/Gd \/TC  \/permissive-  \"C:\\DEV\\PyABI\\PyABI\\src\\sqlite\\sqlite3.c\"",
+    "file": "C:\\DEV\\PyABI\\PyABI\\src\\sqlite\\sqlite3.c"
+  }
+]

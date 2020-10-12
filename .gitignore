@@ -15,5 +15,6 @@
 *.log
 *.vcxproj.user
 *.vcxproj.FileListAbsolute.txt
+*.nativecodeanalysis.*
 
 *.pyc
