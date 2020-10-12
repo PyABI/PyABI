@@ -47,7 +47,7 @@ Please read the leading comments before using the class.
 #define CPLUSPLUS_STD CPLUSPLUS_98
 #elif __cplusplus < 201402L
 #define CPLUSPLUS_STD CPLUSPLUS_11
-#else 
+#else
 #define CPLUSPLUS_STD CPLUSPLUS_14
 #endif
 
@@ -65,7 +65,7 @@ Please read the leading comments before using the class.
 // and this version always supports at least the CPLUSPLUS_14 approach
 #define CPLUSPLUS_STD CPLUSPLUS_14
 
-#endif 
+#endif
 
 #else
 // Unknown compiler, assume C++ 98
@@ -89,7 +89,7 @@ Please read the leading comments before using the class.
 // This won't be set otherwise, but the headers won't compile, either
 #if __cpp_constexpr >= 201304L
 #define CONSTEXPR_SUPPORT CONSTEXPR_CPP14 // Clang, gcc, Visual Studio 2017 or later
-#elif __cpp_constexpr >= 200704L 
+#elif __cpp_constexpr >= 200704L
 #define CONSTEXPR_SUPPORT CONSTEXPR_CPP11 // Clang, gcc with -std=c++11, Visual Studio 2015
 #else
 #define CONSTEXPR_SUPPORT CONSTEXPR_NONE
@@ -174,7 +174,7 @@ Please read the leading comments before using the class.
 #if SAFEINT_COMPILER == VISUAL_STUDIO_COMPILER && defined _M_AMD64 && !defined SAFEINT_USE_INTRINSICS
 #include <intrin.h>
 #define SAFEINT_USE_INTRINSICS 1
-#define _CONSTEXPR14_MULTIPLY 
+#define _CONSTEXPR14_MULTIPLY
 #else
 #define SAFEINT_USE_INTRINSICS 0
 #define _CONSTEXPR14_MULTIPLY _CONSTEXPR14
@@ -192,7 +192,7 @@ Please read the leading comments before using the class.
 #endif
 
 #if !defined _CRT_SECURE_INVALID_PARAMETER
-// Calling fail fast is somewhat more robust than calling abort, 
+// Calling fail fast is somewhat more robust than calling abort,
 // but abort is the closest we can manage without Visual Studio support
 // Need the header for abort()
 #include <stdlib.h>
@@ -566,7 +566,7 @@ SIZE_T_CAST_NEEDED                 - some compilers complain if there is not a c
 *
 */
 
-// Warning - this very old work-around will be deprecated in future releases. 
+// Warning - this very old work-around will be deprecated in future releases.
 #if defined VISUAL_STUDIO_SAFEINT_COMPAT
 namespace msl
 {
@@ -674,7 +674,7 @@ namespace msl
 #endif
 
     // Note - removed weak annotation on class due to gcc complaints
-    // This was the only place in the file that used it, need to better understand 
+    // This was the only place in the file that used it, need to better understand
     // whether it was put there correctly in the first place
 
     class SAFEINT_VISIBLE SafeIntException
@@ -691,7 +691,7 @@ namespace msl
       // Visual Studio version of SafeInt provides for two possible error
       // handlers:
       // SafeIntErrorPolicy_SafeIntException - C++ exception, default if not otherwise defined
-      // SafeIntErrorPolicy_InvalidParameter - Calls fail fast (Windows-specific), bypasses any exception handlers, 
+      // SafeIntErrorPolicy_InvalidParameter - Calls fail fast (Windows-specific), bypasses any exception handlers,
       //                                       exits the app with a crash
       template < typename E > class SafeIntExceptionHandler;
 
@@ -737,7 +737,7 @@ namespace msl
         }
       };
 
-#if defined _WINDOWS_ 
+#if defined _WINDOWS_
 
       class SafeIntWin32ExceptionHandler
       {
@@ -767,12 +767,12 @@ namespace msl
     typedef SafeIntInternal::SafeInt_InvalidParameter InvalidParameterExceptionHandler;
 
     // This exception handler is no longer recommended, but is left here in order not to break existing users
-#if defined _WINDOWS_ 
+#if defined _WINDOWS_
     typedef SafeIntInternal::SafeIntWin32ExceptionHandler Win32ExceptionHandler;
 #endif
 
     // For Visual Studio compatibility
-#if defined VISUAL_STUDIO_SAFEINT_COMPAT 
+#if defined VISUAL_STUDIO_SAFEINT_COMPAT
     typedef CPlusPlusExceptionHandler  SafeIntErrorPolicy_SafeIntException;
     typedef InvalidParameterExceptionHandler SafeIntErrorPolicy_InvalidParameter;
 #endif
@@ -808,7 +808,7 @@ namespace msl
 #define SAFEINT_EXCEPTION_HANDLER_CPP 0
 #endif
 
-// If an error handler is chosen other than C++ exceptions, such as Win32 exceptions, fail fast, 
+// If an error handler is chosen other than C++ exceptions, such as Win32 exceptions, fail fast,
 // or abort, then all methods become no throw. Some teams track throw() annotations closely,
 // and the following option provides for this.
 #if SAFEINT_EXCEPTION_HANDLER_CPP
@@ -829,7 +829,7 @@ namespace msl
                                                  public:
                                                    enum
                                                    {
-                                                     isBool = false, // We specialized out a bool  
+                                                     isBool = false, // We specialized out a bool
                                                      // If it is an enum, then consider it an int type
                                                      // This does allow someone to make a SafeInt from an enum type, which is not recommended,
                                                      // but it also allows someone to add an enum value to a SafeInt, which is handy.
@@ -7141,4 +7141,3 @@ namespace msl
 #endif
 
 #endif //SAFEINT_HPP
-

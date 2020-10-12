@@ -706,7 +706,7 @@ null) and other simple structures.
     |                 | execute a quotation that may set a new |
     |                 | buffer. restores the saved pointers    |
     |                 | when done                              |
-    
+
 ~~~
 {{
   :Start `0 ; data
@@ -1123,7 +1123,7 @@ Convert a decimal (base 10) number to a string.
 
 ~~~
 {{
-  :correct (c-c)  dup $0 lt? [ $0 over - #2 * + ] if ; 
+  :correct (c-c)  dup $0 lt? [ $0 over - #2 * + ] if ;
 ---reveal---
   :n:to-string  (n-s)
     [ here buffer:set dup n:abs
@@ -1714,7 +1714,7 @@ few words provide a means of doing this in RETRO 12.
 
 To allow a word to be overridden, add a call to `hook` as
 the first word in the definition. This will compile a jump
-to the actual definition start. 
+to the actual definition start.
 
 ~~~
 :hook (-)  'liju.... i here n:inc , ; immediate

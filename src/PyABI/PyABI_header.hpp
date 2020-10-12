@@ -229,7 +229,7 @@ public:
 	Object(PyObject* object) {
 		if (object == Py_None) {
 			m_object.reset(new Object_None);
-		} 
+		}
 		else if (object == Py_True || object == Py_False) {
 			m_object.reset(new Object_Bool(object == Py_True));
 		}
@@ -391,7 +391,7 @@ private:
 		}
 
 	private:
-		
+
 		bool m_value;
 
 	};

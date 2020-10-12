@@ -980,7 +980,7 @@ namespace argparse {
             std::cout << *this;
             std::exit(0);
           }
-          // the second optional argument is --version 
+          // the second optional argument is --version
           else if (tArgument == std::next(mOptionalArguments.begin(), 1)) {
             std::cout << mVersion << "\n";
             std::exit(0);

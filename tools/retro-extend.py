@@ -5,7 +5,7 @@
 # into the image. After completion the image file will be updated with
 # the changes.
 #
-# Copyright (c) 2010 - 2020, Charles Childers
+# Copyright (c) 2010-2020, Charles Childers
 # Optimizations and process() rewrite by Greg Copeland
 #
 # Usage:
@@ -13,7 +13,9 @@
 #     retro-extend.py image filename [filenames]
 
 
-import os, sys, math, time, struct
+import os
+import struct
+import sys
 from struct import pack, unpack
 
 ip = 0

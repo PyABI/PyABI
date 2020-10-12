@@ -4,20 +4,20 @@
  * Author: Tomasz Sowa <t.sowa@ttmath.org>
  */
 
-/* 
+/*
  * Copyright (c) 2006-2017, Tomasz Sowa
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- *    
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *    
+ *
  *  * Neither the name Tomasz Sowa nor the names of contributors to this
  *    project may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
@@ -113,7 +113,7 @@ public:
 			2147483648 because the max value which can be held is 2147483647
 
 			we don't change the value and we're using this fact somewhere in some methods
-			(if we look on our value without the sign we get the correct value 
+			(if we look on our value without the sign we get the correct value
 			eg. -2147483648 in Int<1> will be 2147483648 on the UInt<1> type)
 		*/
 		if( UInt<value_size>::IsOnlyTheHighestBitSet() )
@@ -128,13 +128,13 @@ public:
 
 
 
-	/*!	
+	/*!
 		this method sets the sign
 
 		samples
 		-  1  -> -1
 		-  -2 -> -2
-		
+
 		from a positive value we make a negative value,
 		if the value is negative we do nothing
 	*/
@@ -193,7 +193,7 @@ private:
 		}
 
 		if( p1_is_sign && p2_is_sign )
-		{	
+		{
 			if( ! UInt<value_size>::IsTheHighestBitSet() )
 				return 1;
 		}
@@ -222,7 +222,7 @@ public:
 		bool p1_is_sign = IsSign();
 		bool p2_is_sign = ss2.IsSign();
 
-		UInt<value_size>::Add(ss2);		
+		UInt<value_size>::Add(ss2);
 
 	return CorrectCarryAfterAdding(p1_is_sign, p2_is_sign);
 	}
@@ -238,7 +238,7 @@ public:
 	{
 		bool p1_is_sign = IsSign();
 
-		UInt<value_size>::AddInt(value, index);		
+		UInt<value_size>::AddInt(value, index);
 
 	return CorrectCarryAfterAdding(p1_is_sign, false);
 	}
@@ -257,7 +257,7 @@ public:
 	{
 		bool p1_is_sign = IsSign();
 
-		UInt<value_size>::AddTwoInts(x2, x1, index);		
+		UInt<value_size>::AddTwoInts(x2, x1, index);
 
 	return CorrectCarryAfterAdding(p1_is_sign, false);
 	}
@@ -273,7 +273,7 @@ private:
 		}
 
 		if( p1_is_sign && !p2_is_sign )
-		{	
+		{
 			if( ! UInt<value_size>::IsTheHighestBitSet() )
 				return 1;
 		}
@@ -283,11 +283,11 @@ private:
 
 public:
 
-	/*!	
+	/*!
 		this method subtracts two values with a sign
 
 		we don't use the previous Add because the method ChangeSign can
-		sometimes return carry 
+		sometimes return carry
 
 		this = p1(=this) - p2
 
@@ -301,7 +301,7 @@ public:
 		bool p1_is_sign = IsSign();
 		bool p2_is_sign = ss2.IsSign();
 
-		UInt<value_size>::Sub(ss2);		
+		UInt<value_size>::Sub(ss2);
 
 	return CorrectCarryAfterSubtracting(p1_is_sign, p2_is_sign);
 	}
@@ -315,7 +315,7 @@ public:
 	{
 		bool p1_is_sign = IsSign();
 
-		UInt<value_size>::SubInt(value, index);		
+		UInt<value_size>::SubInt(value, index);
 
 	return CorrectCarryAfterSubtracting(p1_is_sign, false);
 	}
@@ -328,7 +328,7 @@ public:
 	{
 		bool p1_is_sign = IsSign();
 
-		UInt<value_size>::AddOne();		
+		UInt<value_size>::AddOne();
 
 	return CorrectCarryAfterAdding(p1_is_sign, false);
 	}
@@ -341,7 +341,7 @@ public:
 	{
 		bool p1_is_sign = IsSign();
 
-		UInt<value_size>::SubOne();		
+		UInt<value_size>::SubOne();
 
 	return CorrectCarryAfterSubtracting(p1_is_sign, false);
 	}
@@ -500,7 +500,7 @@ public:
 
 	return c;
 	}
-	
+
 	uint Div(const Int<value_size> & ss2, Int<value_size> & remainder)
 	{
 		return Div(ss2, &remainder);
@@ -585,7 +585,7 @@ private:
 		uint c_temp = UInt<value_size>::Pow(pow);
 		if( c_temp > 0 )
 			return c_temp; // c_temp can be: 0, 1 or 2
-		
+
 		if( was_sign && (pow.table[0] & 1) == 1 )
 			// negative value to the power of odd number is negative
 			c += ChangeSign();
@@ -654,7 +654,7 @@ private:
 
 
 		if( value_size > argument_size )
-		{	
+		{
 			uint fill;
 
 			if( UInt_type )
@@ -711,7 +711,7 @@ public:
 			UInt<value_size>::table[i] = fill;
 
 		UInt<value_size>::table[0] = uint(value);
-	
+
 		// there'll never be a carry here
 	return 0;
 	}
@@ -874,7 +874,7 @@ public:
 		// look that 'size' we still set as 'value_size' and not as u.value_size
 		FromUInt(u);
 	}
- 
+
 
 
 #ifdef TTMATH_PLATFORM32
@@ -893,7 +893,7 @@ public:
 
 		if( value_size == 1 )
 			return ((UInt<value_size>::table[0] & TTMATH_UINT_HIGHEST_BIT) == 0) ? 0 : 1;
-		
+
 		if( value_size == 2 )
 			return ((UInt<value_size>::table[1] & TTMATH_UINT_HIGHEST_BIT) == 0) ? 0 : 1;
 
@@ -910,7 +910,7 @@ public:
 		return FromUInt(n);
 	}
 
-		
+
 	/*!
 		this method converts signed 64 bit int type to this class
 		***this method is created only on a 32bit platform***
@@ -1288,7 +1288,7 @@ public:
 
 		result = int(first);
 		uint mask = IsSign() ? TTMATH_UINT_MAX_VALUE : 0;
-	
+
 		if( (first >> 31) != (mask >> 31) )
 			return 1;
 
@@ -1306,7 +1306,7 @@ public:
 
 private:
 
-	/*!	
+	/*!
 		an auxiliary method for converting to a string
 	*/
 	template<class string_type>
@@ -1326,7 +1326,7 @@ private:
 
 public:
 
-	/*!	
+	/*!
 		this method converts the value to a string with a base equal 'b'
 	*/
 	void ToString(std::string & result, uint b = 10) const
@@ -1335,7 +1335,7 @@ public:
 	}
 
 
-	/*!	
+	/*!
 		this method converts the value to a string with a base equal 'b'
 	*/
 	std::string ToString(uint b = 10) const
@@ -1349,7 +1349,7 @@ public:
 
 #ifndef TTMATH_DONT_USE_WCHAR
 
-	/*!	
+	/*!
 		this method converts the value to a string with a base equal 'b'
 	*/
 	void ToString(std::wstring & result, uint b = 10) const
@@ -1358,7 +1358,7 @@ public:
 	}
 
 
-	/*!	
+	/*!
 		this method converts the value to a string with a base equal 'b'
 	*/
 	std::wstring ToWString(uint b = 10) const
@@ -1382,7 +1382,7 @@ private:
 	uint FromStringBase(const char_type * s, uint b = 10, const char_type ** after_source = 0, bool * value_read = 0)
 	{
 	bool is_sign = false;
-	
+
 		Misc::SkipWhiteCharacters(s);
 
 		if( *s == '-' )
@@ -1647,7 +1647,7 @@ public:
 
 	/*!
 	*
-	*	standard mathematical operators 
+	*	standard mathematical operators
 	*
 	*/
 
@@ -1662,7 +1662,7 @@ public:
 	Int<value_size> temp(*this);
 
 		temp.ChangeSign();
-		
+
 	return temp;
 	}
 
@@ -1743,7 +1743,7 @@ public:
 	{
 	Int<value_size> temp(*this);
 	Int<value_size> remainder;
-	
+
 		temp.Div(p2, remainder);
 
 	return remainder;
@@ -1753,7 +1753,7 @@ public:
 	Int<value_size> & operator%=(const Int<value_size> & p2)
 	{
 	Int<value_size> remainder;
-	
+
 		Div(p2, remainder);
 		operator=(remainder);
 
@@ -1863,10 +1863,10 @@ private:
 	static istream_type & InputFromStream(istream_type & s, Int<value_size> & l)
 	{
 	string_type ss;
-	
+
 	// char or wchar_t for operator>>
 	char_type z;
-	
+
 		// operator>> omits white characters if they're set for ommiting
 		s >> z;
 

@@ -92,7 +92,7 @@ when composing the bundles, with NOP being named as two dots.
 So:
 
     lit lit add nop
-    
+
 Is a bundle named:
 
     liliad..
@@ -354,7 +354,7 @@ significant performance hit, so I'm leaving it this way.
 
     :choose
       &choice:false store &choice:true store
-      &choice:false + fetch call ;    
+      &choice:false + fetch call ;
 
 ~~~
 : choice:true
@@ -530,7 +530,7 @@ r comma
 With the core functions above it's now possible to setup a few
 more things that make compilation at runtime more practical.
 
-First, a variable indicating whether we should compile or run a 
+First, a variable indicating whether we should compile or run a
 function. In traditional Forth this would be **STATE**; I call
 it `Compiler`.
 
@@ -647,7 +647,7 @@ The class mechanism is not limited to these classes. You can
 write custom classes at any time. On entry the custom handler
 should take the XT passed on the stack and do something with
 it. Generally the handler should also check the `Compiler`
-state to determine what to do in either interpretation or 
+state to determine what to do in either interpretation or
 compilation.
 
 ### Dictionary
@@ -696,7 +696,7 @@ entry an arbitrary label of 9999. This is set at the start of
 the source. (See *In the Beginning...*)
 
 Rx provides accessor functions for each field. Since the number
-of fields (or their ordering) may change over time, using these 
+of fields (or their ordering) may change over time, using these
 reduces the number of places where field offsets are hard coded.
 
 ~~~
@@ -717,7 +717,7 @@ d 3
 ~~~
 
 A traditional Forth has `create` to make a new dictionary entry
-pointing to the next free location in `Heap`. Rx has `d:add-header` 
+pointing to the next free location in `Heap`. Rx has `d:add-header`
 which serves as a slightly more flexible base. You provide a
 string for the name, a pointer to the class handler, and a
 pointer to the start of the function. Rx does the rest.
@@ -794,7 +794,7 @@ r Which
 
 ### Number Conversion
 
-This code converts a zero terminated string into a number. The 
+This code converts a zero terminated string into a number. The
 approach is very simple:
 
 * Store an internal multiplier value (-1 for negative, 1 for
@@ -852,7 +852,7 @@ An input token has a form like:
 
     <prefix-char>string
 
-Rx will check the first character to see if it matches a known 
+Rx will check the first character to see if it matches a known
 prefix. If it does, it will pass the string (sans prefix) to
 the prefix handler. If not, it will attempt to find the token
 in the dictionary.
@@ -933,7 +933,7 @@ i nere....
 ~~~
 
 Rx makes extensive use of prefixes for implementing major parts
-of the language, including  parsing numbers (prefix with `#`), 
+of the language, including  parsing numbers (prefix with `#`),
 obtaining pointers (prefix with `&`), and defining functions
 (using the `:` prefix).
 

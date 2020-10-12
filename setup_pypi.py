@@ -8,10 +8,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="PyABI",
-    version="0.0.42",
+    version="0.42.12",
     author="Scott McCallum (github.com scott91e1)",
     author_email="262464@195387.com",
-    description="Core Implimation of the C++ PyABI Specification PEP-TBA",
+    description="Core Implimation of the C++ PyABI Specification",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/PyABI/PyABI",
@@ -21,5 +21,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

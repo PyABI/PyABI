@@ -6,13 +6,13 @@
 #
 # Usage:
 #
-#     retro-encode.py
+#     retro-embed.py
 
 import os
-import sys
-from struct import pack, unpack
+from struct import unpack
 
 memory = []
+
 
 def load_image():
     global memory
@@ -21,18 +21,19 @@ def load_image():
     memory = list(unpack(cells * "i", f.read()))
     f.close()
 
+
 if __name__ == "__main__":
     load_image()
 
     print(len(memory))
-    print('[')
+    print("[")
     line = []
     for iter in range(0, len(memory)):
         if iter > 0:
-            line.append(',')
+            line.append(",")
         line.append(str(memory[iter]))
-        if len(''.join(line)) > 65:
-            print(''.join(line))
+        if len("".join(line)) > 65:
+            print("".join(line))
             line = []
-    print(''.join(line))
-    print(']')
+    print("".join(line))
+    print("]")

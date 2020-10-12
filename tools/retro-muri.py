@@ -7,13 +7,14 @@
 # This will extract the code blocks in the specified file and generate an
 # image file named `ngaImage`.
 #
-# Copyright (c) 2020, Charles Childers
+# Copyright (c) 2020-2020, Charles Childers
 #
 # Usage:
 #
 #    retro.muri.py filename
 
-import sys, struct
+import struct
+import sys
 
 # labels stores the label names as a dictionary, with the key being
 # the label name and the value being the location in memory.

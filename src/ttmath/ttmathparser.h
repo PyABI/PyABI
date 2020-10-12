@@ -4,20 +4,20 @@
  * Author: Tomasz Sowa <t.sowa@ttmath.org>
  */
 
-/* 
+/*
  * Copyright (c) 2006-2017, Tomasz Sowa
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- *    
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *    
+ *
  *  * Neither the name Tomasz Sowa nor the names of contributors to this
  *    project may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
@@ -59,11 +59,11 @@
 namespace ttmath
 {
 
-/*! 
+/*!
 	\brief Mathematical parser
 
 	let x will be an input string meaning an expression for converting:
-	
+
 	x = [+|-]Value[operator[+|-]Value][operator[+|-]Value]...
 	where:
 		an operator can be:
@@ -81,13 +81,13 @@ namespace ttmath
 			>= (greater or equal than)
 			== (equal)
 			!= (not equal)   (all above logical operators have the same priority)
-			
+
 			&& (logical and)
 
 			|| (logical or) (the lowest priority)
 
 		short mul:
- 		 if the second Value (Var below) is either a variable or function there might not be 
+ 		 if the second Value (Var below) is either a variable or function there might not be
 		 an operator between them, e.g.
 	        "[+|-]Value Var" is treated as "[+|-]Value * Var" and the multiplication
 	        has the same priority as a normal multiplication:
@@ -175,7 +175,7 @@ protected:
 			assoc = non_right;
 
 			switch( type )
-			{		
+			{
 			case assign:
 				priority = 3;
 				assoc = right;
@@ -313,7 +313,7 @@ public:
 
 	you should check if the stack is not empty, because if there was
 	a syntax error in the input string then we do not have any results
-	on the stack 
+	on the stack
 */
 std::vector<Item> stack;
 
@@ -415,7 +415,7 @@ std::set<std::string> visited_functions;
 
 	'pstack' is the pointer to the first argument on our stack
 	'amount_of_arg' tell us how many argument there are in our stack
-	'result' is the reference for result of function 
+	'result' is the reference for result of function
 */
 typedef void (Parser<ValueType>::*pfunction)(unsigned int pstack, int amount_of_arg, ValueType & result);
 
@@ -641,7 +641,7 @@ void RecurrenceParsingVariablesOrFunction_DeleteName(bool variable, const std::s
 
 /*!
 	this method returns the value of a variable or function
-	by creating a new instance of the mathematical parser 
+	by creating a new instance of the mathematical parser
 	and making the standard parsing algorithm on the given string
 
 	this method is used only during parsing user defined variables or functions
@@ -732,7 +732,7 @@ return true;
 /*!
 	this method returns the value of a variable from variables' table
 
-	we make an object of type ValueType then call a method which 
+	we make an object of type ValueType then call a method which
 	sets the correct value in it and finally we'll return the object
 */
 virtual ValueType GetValueOfVariable(const std::string & variable_name)
@@ -823,7 +823,7 @@ void Gamma(unsigned int index, int amount_of_args, ValueType & result)
 		Error( err_improper_amount_of_arguments );
 
 	ErrorCode err;
-	
+
 	result = ttmath::Gamma(stack[index].value, cgamma, &err, pstop_calculating);
 
 	if(err != err_ok)
@@ -1165,7 +1165,7 @@ void RadToDeg(unsigned int index, int amount_of_args, ValueType & result)
 
 	if( amount_of_args != 1 )
 		Error( err_improper_amount_of_arguments );
-	
+
 	result = ttmath::RadToDeg(stack[index].value, &err);
 
 	if( err != err_ok )
@@ -1193,7 +1193,7 @@ void GradToRad(unsigned int index, int amount_of_args, ValueType & result)
 
 	if( amount_of_args != 1 )
 		Error( err_improper_amount_of_arguments );
-	
+
 	result = ttmath::GradToRad(stack[index].value, &err);
 
 	if( err != err_ok )
@@ -1207,7 +1207,7 @@ void RadToGrad(unsigned int index, int amount_of_args, ValueType & result)
 
 	if( amount_of_args != 1 )
 		Error( err_improper_amount_of_arguments );
-	
+
 	result = ttmath::RadToGrad(stack[index].value, &err);
 
 	if( err != err_ok )
@@ -1244,7 +1244,7 @@ void GradToDeg(unsigned int index, int amount_of_args, ValueType & result)
 
 	if( amount_of_args != 1 )
 		Error( err_improper_amount_of_arguments );
-	
+
 	result = ttmath::GradToDeg(stack[index].value, &err);
 
 	if( err != err_ok )
@@ -1480,7 +1480,7 @@ void Sum(unsigned int index, int amount_of_args, ValueType & result)
 	for(int i=1 ; i < amount_of_args ; ++i )
 		if( result.Add( stack[ index + i ].value ) )
 			Error( err_overflow );
-}	
+}
 
 void Avg(unsigned int index, int amount_of_args, ValueType & result)
 {
@@ -1495,7 +1495,7 @@ void Avg(unsigned int index, int amount_of_args, ValueType & result)
 
 	if( result.Div( amount_of_args ) )
 		Error( err_overflow );
-}	
+}
 
 
 void Frac(unsigned int index, int amount_of_args, ValueType & result)
@@ -1974,7 +1974,7 @@ virtual bool ReadToken()
 
 /*!
 	we're reading the item
-  
+
 	return values:
 		0 - all ok, the item is successfully read
 		1 - the end of the string (the item is not read)
@@ -2057,7 +2057,7 @@ typename OperatorsTable::iterator iter_old, iter_new;
 	{
 		oper += *pstring;
 		iter_new = operators_table.lower_bound(oper);
-		
+
 		if( iter_new == operators_table.end() || !IsSubstring(oper, iter_new->first) )
 		{
 			oper.erase(oper.begin() + oper.size() - 1); // we've got minimum one element
@@ -2067,10 +2067,10 @@ typename OperatorsTable::iterator iter_old, iter_new;
 				AddToStack(iter_old->second);
 				break;
 			}
-			
+
 			Error( err_unknown_operator );
 		}
-	
+
 		iter_old = iter_new;
 	}
 }
@@ -2264,7 +2264,7 @@ uint res;
 	this method is trying to roll the stack up with the operator's priority
 
 	for example if there are:
-		"1 - 2 +" 
+		"1 - 2 +"
 	we can subtract "1-2" and the result store on the place where is '1' and copy the last
 	operator '+', that means there'll be '-1+' on our stack
 
@@ -2310,7 +2310,7 @@ void RollUpStackWithOperatorsPriority()
 	this method is trying to roll the stack up without testing any operators
 
 	for example if there are:
-		"1 - 2" 
+		"1 - 2"
 	there'll be "-1" on our stack
 */
 void RollUPStack()
@@ -2348,7 +2348,7 @@ void HowManyParameters(unsigned int & size, unsigned int & index)
 		if( stack[index-1].type != Item::numerical_value )
 		{
 			/*
-				this element must be 'numerical_value', if not that means 
+				this element must be 'numerical_value', if not that means
 				there's an error in our algorithm
 			*/
 			Error( err_internal_error );
@@ -2378,7 +2378,7 @@ void RollingUpFinalBracket()
 	unsigned int amount_of_parameters;
 	unsigned int index;
 
-	
+
 	if( stack_index<1 ||
 		(stack[stack_index-1].type != Item::numerical_value &&
 		 stack[stack_index-1].type != Item::first_bracket)
@@ -2387,7 +2387,7 @@ void RollingUpFinalBracket()
 		Error( err_unexpected_final_bracket );
 		return;
 	}
-	
+
 	RollUPStack();
 	HowManyParameters(amount_of_parameters, index);
 
@@ -2505,7 +2505,7 @@ void NormalizeStack()
 		stack.clear();
 		return;
 	}
-	
+
 	/*
 		'stack_index' tell us how many elements there are on the stack,
 		we must resize the stack now because 'stack_index' is using only for parsing

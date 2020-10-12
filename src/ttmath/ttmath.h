@@ -4,20 +4,20 @@
  * Author: Tomasz Sowa <t.sowa@ttmath.org>
  */
 
-/* 
+/*
  * Copyright (c) 2006-2017, Tomasz Sowa
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  *  * Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
- *    
+ *
  *  * Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- *    
+ *
  *  * Neither the name Tomasz Sowa nor the names of contributors to this
  *    project may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
@@ -170,7 +170,7 @@ namespace ttmath
 		if( err )
 			*err = c ? err_overflow : err_ok;
 
-	return result;	
+	return result;
 	}
 
 
@@ -217,7 +217,7 @@ namespace ttmath
 		if( err )
 			*err = c ? err_overflow : err_ok;
 
-	return result;	
+	return result;
 	}
 
 
@@ -229,7 +229,7 @@ namespace ttmath
 	 *
 	 */
 
-	
+
 	/*!
 		this function calculates the natural logarithm (logarithm with the base 'e')
 	*/
@@ -359,7 +359,7 @@ namespace ttmath
 
 	/*!
 		an auxiliary function for calculating the Sine
-		(you don't have to call this function) 
+		(you don't have to call this function)
 	*/
 	template<class ValueType>
 	uint PrepareSin(ValueType & x, bool & change_sign)
@@ -367,21 +367,21 @@ namespace ttmath
 	ValueType temp;
 
 		change_sign = false;
-	
+
 		if( x.IsSign() )
 		{
 			// we're using the formula 'sin(-x) = -sin(x)'
 			change_sign = !change_sign;
 			x.ChangeSign();
 		}
-	
+
 		// we're reducing the period 2*PI
 		// (for big values there'll always be zero)
 		temp.Set2Pi();
-		
+
 		if( x.Mod(temp) )
 			return 1;
-		
+
 
 		// we're setting 'x' as being in the range of <0, 0.5PI>
 
@@ -393,7 +393,7 @@ namespace ttmath
 			x.Sub( temp );
 			change_sign = !change_sign;
 		}
-		
+
 		temp.Set05Pi();
 
 		if( x > temp )
@@ -406,10 +406,10 @@ namespace ttmath
 	return 0;
 	}
 
-	
+
 	/*!
 		an auxiliary function for calculating the Sine
-		(you don't have to call this function) 
+		(you don't have to call this function)
 
 		it returns Sin(x) where 'x' is from <0, PI/2>
 		we're calculating the Sin with using Taylor series in zero or PI/2
@@ -440,8 +440,8 @@ namespace ttmath
 
 		one.SetOne();
 
-		if( x < temp ) 
-		{	
+		if( x < temp )
+		{
 			// we're using the Taylor series with a=0
 			result    = x;
 			numerator = x;
@@ -500,7 +500,7 @@ namespace ttmath
 
 
 			addition = !addition;
-	
+
 			// we're testing whether the result has changed after adding
 			// the next part of the Taylor formula, if not we end the loop
 			// (it means 'x' is zero or 'x' is PI/2 or this part of the formula
@@ -527,8 +527,8 @@ namespace ttmath
 	using namespace auxiliaryfunctions;
 
 	ValueType one, result;
-	bool change_sign;	
-	
+	bool change_sign;
+
 		if( x.IsNan() )
 		{
 			if( err )
@@ -544,7 +544,7 @@ namespace ttmath
 		{
 			// x is too big, we cannnot reduce the 2*PI period
 			// prior to version 0.8.5 the result was zero
-			
+
 			// result has NaN flag set by default
 
 			if( err )
@@ -554,7 +554,7 @@ namespace ttmath
 		}
 
 		result = Sin0pi05( x );
-	
+
 		one.SetOne();
 
 		// after calculations there can be small distortions in the result
@@ -567,12 +567,12 @@ namespace ttmath
 			result.SetZero();
 
 		if( change_sign )
-			result.ChangeSign();	
-		
+			result.ChangeSign();
+
 	return result;
 	}
 
-	
+
 	/*!
 		this function calulates the Cosine
 		we're using the formula cos(x) = sin(x + PI/2)
@@ -597,13 +597,13 @@ namespace ttmath
 		{
 			if( err )
 				*err = err_overflow;
-	
+
 		return ValueType(); // result is undefined (NaN is set by default)
 		}
 
 	return Sin(x, err);
 	}
-	
+
 
 	/*!
 		this function calulates the Tangent
@@ -619,7 +619,7 @@ namespace ttmath
 	ValueType Tan(const ValueType & x, ErrorCode * err = 0)
 	{
 		ValueType result = Cos(x, err);
-		
+
 		if( err && *err != err_ok )
 			return result;
 
@@ -654,7 +654,7 @@ namespace ttmath
 		this function calulates the Cotangent
 		we're using the formula tan(x) = cos(x) / sin(x)
 
-		(why do we make it in this way? 
+		(why do we make it in this way?
 		look at information in Tan() function)
 	*/
 	template<class ValueType>
@@ -674,7 +674,7 @@ namespace ttmath
 
 		return result;
 		}
-	
+
 	return Cos(x, err) / result;
 	}
 
@@ -706,7 +706,7 @@ namespace ttmath
 		an auxiliary function for calculating the Arc Sine
 
 		we're calculating asin from the following formula:
-		asin(x) = x + (1*x^3)/(2*3) + (1*3*x^5)/(2*4*5) + (1*3*5*x^7)/(2*4*6*7) + ... 
+		asin(x) = x + (1*x^3)/(2*3) + (1*3*x^5)/(2*4*5) + (1*3*5*x^7)/(2*4*6*7) + ...
 		where abs(x) <= 1
 
 		we're using this formula when x is from <0, 1/2>
@@ -732,7 +732,7 @@ namespace ttmath
 		for(uint i=1 ; i<=TTMATH_ARITHMETIC_MAX_LOOP ; ++i)
 		{
 			c += nominator_x.Mul(x2);
-			nominator_temp = nominator_x;	
+			nominator_temp = nominator_x;
 			c += nominator_temp.Mul(nominator);
 			denominator_temp = denominator;
 			c += denominator_temp.Mul(denominator_x);
@@ -740,11 +740,11 @@ namespace ttmath
 
 			// if there is a carry somewhere we only break the calculating
 			// the result should be ok -- it's from <-pi/2, pi/2>
-			if( c ) 
+			if( c )
 				break;
 
 			result.Add(nominator_temp);
-			
+
 			if( result == old_result )
 				 // there's no sense to calculate more
 				break;
@@ -769,7 +769,7 @@ namespace ttmath
 
 		we're calculating asin from the following formula:
 		asin(x) = pi/2 - sqrt(2)*sqrt(1-x) * asin_temp
-		asin_temp = 1 + (1*(1-x))/((2*3)*(2)) + (1*3*(1-x)^2)/((2*4*5)*(4)) + (1*3*5*(1-x)^3)/((2*4*6*7)*(8)) + ... 
+		asin_temp = 1 + (1*(1-x))/((2*3)*(2)) + (1*3*(1-x)^2)/((2*4*5)*(4)) + (1*3*5*(1-x)^3)/((2*4*6*7)*(8)) + ...
 
 		where abs(x) <= 1
 
@@ -802,7 +802,7 @@ namespace ttmath
 
 		for(uint i=1 ; i<=TTMATH_ARITHMETIC_MAX_LOOP ; ++i)
 		{
-			nominator_temp = nominator_x;	
+			nominator_temp = nominator_x;
 			c += nominator_temp.Mul(nominator);
 			denominator_temp = denominator;
 			c += denominator_temp.Mul(denominator_x);
@@ -811,11 +811,11 @@ namespace ttmath
 
 			// if there is a carry somewhere we only break the calculating
 			// the result should be ok -- it's from <-pi/2, pi/2>
-			if( c ) 
+			if( c )
 				break;
 
 			result.Add(nominator_temp);
-			
+
 			if( result == old_result )
 				 // there's no sense to calculate more
 				break;
@@ -831,7 +831,7 @@ namespace ttmath
 			c += denominator2.Mul(two);
 		}
 
-		
+
 		nominator_x_add.exponent.AddOne(); // *2
 		one.exponent.SubOne(); // =0.5
 		nominator_x_add.Pow(one); // =sqrt(nominator_x_add)
@@ -886,7 +886,7 @@ namespace ttmath
 
 		// asin(-x) = -asin(x)
 		if( x.GreaterWithoutSignThan(one) )
-			result = ASin_1(x);	
+			result = ASin_1(x);
 		else
 			result = ASin_0(x);
 
@@ -952,7 +952,7 @@ namespace ttmath
 		{
 			c += nominator.Mul(nominator_add);
 			c += denominator.Add(denominator_add);
-	
+
 			temp = nominator;
 			c += temp.Div(denominator);
 
@@ -999,7 +999,7 @@ namespace ttmath
 
 			for example if we have x=0.4999 then during calculating ATan0(0.4999)
 			we have to make about 141 iterations but when we have x=0.5
-			then during calculating ATan0( (x-1)/(1+x) ) we have to make 
+			then during calculating ATan0( (x-1)/(1+x) ) we have to make
 			only about 89 iterations (both for Big<3,9>)
 
 			in the future this 0.5 can be changed
@@ -1059,7 +1059,7 @@ namespace ttmath
 	ValueType temp, atan;
 
 		temp.SetOne();
-		
+
 		if( temp.Div(x) )
 		{
 			// if there was a carry here that means x is very big
@@ -1068,7 +1068,7 @@ namespace ttmath
 		}
 		else
 			atan = ATan01(temp);
-		
+
 		temp.Set05Pi();
 		temp.Sub(atan);
 
@@ -1128,7 +1128,7 @@ namespace ttmath
 
 	/*!
 		this function calculates the Arc Cotangent
-	
+
 		we're using the formula:
 		actan(x) = pi/2 - atan(x)
 	*/
@@ -1255,7 +1255,7 @@ namespace ttmath
 		c += nominator.Sub(emx);
 		denominator = ex;
 		c += denominator.Add(emx);
-		
+
 		c += nominator.Div(denominator);
 
 		if( err )
@@ -1311,7 +1311,7 @@ namespace ttmath
 		c += nominator.Add(emx);
 		denominator = ex;
 		c += denominator.Sub(emx);
-		
+
 		c += nominator.Div(denominator);
 
 		if( err )
@@ -1365,7 +1365,7 @@ namespace ttmath
 		c += xx.Mul(x);
 		c += xx.Add(one);
 		one.exponent.SubOne(); // one=0.5
-		// xx is >= 1 
+		// xx is >= 1
 		c += xx.PowFrac(one); // xx=sqrt(xx)
 		c += xx.Add(x);
 		c += result.Ln(xx); // xx > 0
@@ -1545,7 +1545,7 @@ namespace ttmath
 
 	/*!
 		this function converts degrees to radians
-		
+
 		it returns: x * pi / 180
 	*/
 	template<class ValueType>
@@ -1581,7 +1581,7 @@ namespace ttmath
 
 	/*!
 		this function converts radians to degrees
-		
+
 		it returns: x * 180 / pi
 	*/
 	template<class ValueType>
@@ -1617,11 +1617,11 @@ namespace ttmath
 		long format: (degrees, minutes, seconds)
 		minutes and seconds must be greater than or equal zero
 
-		result: 
+		result:
 		-  if d>=0 : result= d + ((s/60)+m)/60
 		-  if d<0  : result= d - ((s/60)+m)/60
 
-		((s/60)+m)/60 = (s+60*m)/3600 (second version is faster because 
+		((s/60)+m)/60 = (s+60*m)/3600 (second version is faster because
 		there's only one division)
 
 		samples:
@@ -1683,7 +1683,7 @@ namespace ttmath
 
 	/*!
 		this function converts gradians to radians
-		
+
 		it returns: x * pi / 200
 	*/
 	template<class ValueType>
@@ -1719,7 +1719,7 @@ namespace ttmath
 
 	/*!
 		this function converts radians to gradians
-		
+
 		it returns: x * 200 / pi
 	*/
 	template<class ValueType>
@@ -1751,7 +1751,7 @@ namespace ttmath
 
 	/*!
 		this function converts degrees to gradians
-		
+
 		it returns: x * 200 / 180
 	*/
 	template<class ValueType>
@@ -1801,7 +1801,7 @@ namespace ttmath
 
 	/*!
 		this function converts degrees to gradians
-		
+
 		it returns: x * 180 / 200
 	*/
 	template<class ValueType>
@@ -1907,7 +1907,7 @@ namespace ttmath
 
 			return true;
 			}
-	
+
 			// root(x;0) is 1 (if x!=0)
 			x.SetOne();
 
@@ -2053,7 +2053,7 @@ namespace ttmath
 
 
 
-	} // namespace auxiliaryfunctions 
+	} // namespace auxiliaryfunctions
 
 
 
@@ -2250,7 +2250,7 @@ namespace ttmath
 	ValueType k_, temp, temp2, temp3, sum;
 
 		sum.SetZero();
-		
+
 		for(uint k=0 ; k<m ; ++k)			// k<m means k<=m-1
 		{
 			if( stop && (k & 15)==0 )		// means: k % 16 == 0
@@ -2352,7 +2352,7 @@ namespace ttmath
 			CGamma<MyBig> cgamma;
 			SetBernoulliNumbers(cgamma, 3);
 			// now we have three first Bernoulli numbers:  1  -0.5  0.16667
-			
+
 			SetBernoulliNumbers(cgamma, 4);
 			// now we have 7 Bernoulli numbers:  1  -0.5  0.16667   0   -0.0333   0   0.0238
 	*/
@@ -2512,7 +2512,7 @@ namespace ttmath
 
 	/*!
 		an auxiliary function used to calculate the Gamma() function
-	
+
 		we use this function when n is integer and a small value (from 0 to TTMATH_GAMMA_BOUNDARY]
 		we use the formula:
 
@@ -2544,7 +2544,7 @@ namespace ttmath
 
 	return res;
 	}
-	
+
 
 	/*!
 		an auxiliary function used to calculate the Gamma() function
@@ -2781,7 +2781,7 @@ namespace ttmath
 
 	return Gamma(x, err);
 	}
-	
+
 	} // namespace auxiliaryfunctions
 
 
@@ -2840,7 +2840,7 @@ namespace ttmath
 	void CGamma<ValueType>::InitAll()
 	{
 		ValueType x = TTMATH_GAMMA_BOUNDARY + 1;
-		
+
 		// history.Remove(x) removes only one object
 		// we must be sure that there are not others objects with the key 'x'
 		while( history.Remove(x) )

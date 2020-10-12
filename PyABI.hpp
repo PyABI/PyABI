@@ -36,7 +36,7 @@ public:
 
     void hello_world(const uint64_t CallID, const List& args, const Dict& kwargs, const Tuple& defargs) {
         ResultBundle Result(CallID);
-        
+
         /***
 
         do some work on the background thread

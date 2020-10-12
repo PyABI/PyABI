@@ -522,5 +522,3 @@ namespace rang {
 #undef OS_MAC
 
 #endif /* ifndef RANG_DOT_HPP */
-
-

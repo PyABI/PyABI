@@ -3,13 +3,15 @@
 
 from distutils.core import setup, Extension
 
-names = ['PyABI.cpp']
+names = ["PyABI.cpp"]
 
-names.append('sqlite3.c')
+names.append("sqlite3.c")
 
-abi_module = Extension('PyABI_pyd', sources = names)
+abi_module = Extension("PyABI_pyd", sources=names)
 
-setup(name='PyABI_pyd',
-      version='0.0.42',
-      description='Core C++ PyABI',
-      ext_modules=[abi_module])
+setup(
+    name="PyABI_pyd",
+    version="0.42.12",
+    description="Core C++ PyABI",
+    ext_modules=[abi_module],
+)
