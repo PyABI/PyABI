@@ -24,9 +24,9 @@ auto PyABI_threads = 4;
 
 #include "PyABI.hpp"
 
-#include "src/PyABI/PyABI_singleton.hpp"
+#include "src/singleton.hpp"
 
-#include "src/PyABI/PyABI_body.hpp"
+#include "src/body.hpp"
 
 // Module method definitions
 static PyObject* hello_world(PyObject* module, PyObject* args, PyObject* kwargs) {
@@ -264,7 +264,7 @@ int main(int argc, char** argv) {
 
 }
 
-#include "src/PyABI/PyABI_footer.hpp"
+#include "src/footer.hpp"
 
 /***
 

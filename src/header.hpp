@@ -10,9 +10,6 @@ Ethos: http://utf8everywhere.org
 
 #pragma once
 
-#define PY_SSIZE_T_CLEAN
-#include <Python.h>
-
 #include <exception>
 
 #include <map>
@@ -28,19 +25,15 @@ Ethos: http://utf8everywhere.org
 #include <functional>
 #include <condition_variable>
 
-#include "../ttmath/ttmath.h"
+#include "ttmath/ttmath.h"
 using Integer_Huge = ttmath::Int<256>;
 
-#include "../safeint/safeint.hpp"
-//using Integer_Safe32 = SafeInt<int32_t>;
-//using Integer_Safe64 = SafeInt<int64_t>;
+#include "safeint/safeint.hpp"
+using Integer_Safe32 = SafeInt<int32_t>;
+using Integer_Safe64 = SafeInt<int64_t>;
 
-//typedef SafeInt<int32_t> Integer_Safe32;
-//typedef SafeInt<int64_t> Integer_Safe64;
-
-typedef int32_t Integer_Safe32;
-typedef int64_t Integer_Safe64;
-
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
 
 /***
 
@@ -286,7 +279,7 @@ private:
 
 		virtual Integer_Safe64 toInt64() {
 			Integer_Huge huge = toIntHuge();
-			Integer_Safe64 result;
+			int64_t result;
 			huge.ToInt(result);
 			return result;
 		};

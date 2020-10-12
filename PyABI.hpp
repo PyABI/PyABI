@@ -8,7 +8,7 @@ Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
 
 #pragma once
 
-#include "src/PyABI/PyABI_header.hpp"
+#include "src/header.hpp"
 
 class Singleton final {
 

@@ -3,7 +3,7 @@
 License: MIT License
 
 Author: Copyright (c) 2020-2020, Scott McCallum (github.com scott91e1)
-Author: Copyright (c) 2008-2019, Charles Childers (github.com crcx)
+Author: Copyright (c) 2008-2020, Charles Childers (github.com crcx)
 Author: Copyright (c) 2009-2010, Luke Parrish
 Author: Copyright (c) 2010,      Marc Simpson
 Author: Copyright (c) 2010,      Jay Skeer

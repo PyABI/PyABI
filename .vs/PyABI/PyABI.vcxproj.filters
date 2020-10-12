@@ -38,22 +38,22 @@
     <ClInclude Include="..\..\PyABI.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_body.hpp">
+    <ClInclude Include="..\..\src\body.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_footer.hpp">
+    <ClInclude Include="..\..\src\footer.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_header.hpp">
+    <ClInclude Include="..\..\src\header.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth.hpp">
+    <ClInclude Include="..\..\src\retroforth.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_retroforth_bios.hpp">
+    <ClInclude Include="..\..\src\retroforth_bios.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\PyABI\PyABI_singleton.hpp">
+    <ClInclude Include="..\..\src\singleton.hpp">
       <Filter>Source Files\PyABI</Filter>
     </ClInclude>
   </ItemGroup>
